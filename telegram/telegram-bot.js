@@ -52,6 +52,26 @@ class TelegramBot {
             console.error(err)
         }
     }
+
+    /**
+     * Send 'Hello' message
+     *
+     * @param {String} text
+     * @return {Object} Telegram Message
+     * @memberof TelegramBot
+     */
+    async sendMessage(text) {
+        try {
+            return axios.get(this.url + 'sendMessage', {
+                params: {
+                    chat_id: this.chatID,
+                    text,
+                },
+            })
+        } catch (err) {
+            console.error(err)
+        }
+    }
 }
 
 module.exports = TelegramBot

@@ -13,8 +13,16 @@ describe('Tests of telegram Bot', () => {
     }, 8000)
 
     test('should set webhook', async () => {
-        return telegramBot.setWebhook(webhookURL).then((res) => {
-            expect(res.data.ok).toBe(true)
+        return telegramBot.setWebhook(webhookURL).then(({ data }) => {
+            expect(data.ok).toBe(true)
         })
+    })
+
+    test('Should send a "Hello" message to the chat', async () => {
+        return telegramBot
+            .sendMessage('Hello from jest test')
+            .then(({ data }) => {
+                expect(data.ok).toBe(true)
+            })
     })
 })
