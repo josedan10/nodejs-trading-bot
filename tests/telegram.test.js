@@ -1,8 +1,7 @@
 const config = require('../config')
-const { telegramAPIKey, telegramChatID, webhookURL } = config.telegram
-const TelegramBot = require('../telegram/telegram-bot')
-
-const telegramBot = new TelegramBot(telegramAPIKey, telegramChatID)
+const { telegramChatID, webhookURL } = config.telegram
+const telegramBot = require('../telegram/telegram-bot')
+const CommandHandler = require('../telegram/commandHandler')
 
 // Test telegram bot connection
 describe('Tests of telegram Bot', () => {
@@ -54,8 +53,8 @@ describe('Test telegram commands responses', () => {
                 },
             ],
         }
-        return telegramBot
-            .resolveCommand(message)
-            .then((res) => expect(res).toEqual([message.chat.id, `start`]))
+        return CommandHandler.getCommand(message).then((res) =>
+            expect(res).toEqual(`start`)
+        )
     })
 })

@@ -1,6 +1,7 @@
 // const axios = require('axios')
 const WS = require('ws')
-const { bitfinex } = require('../config')
+const { bitfinex, telegram } = require('../config')
+const telegramBot = require('../telegram/telegram-bot')
 
 /**
  * Exchange handler object
@@ -28,16 +29,26 @@ class BitfinexConnection {
     async startWS() {
         try {
             this.ws = new WS(bitfinex.bitfinexPublicURL)
-                .on('message', (msg) => {
-                    expect(JSON.parse(msg).id).toEqual(0)
-                    console.log(msg)
-                })
-                .on('close', () => done())
+            this.setup()
         } catch (err) {
             console.error(err)
             return 'Connection failed'
         }
     }
+
+    /**
+     * Set the event listeners
+     *
+     * @memberof BitfinexConnection
+     */
+    setup() {
+        this.ws.on('open', function () {
+            telegramBot.sendMessage(telegram.telegramChatID, 'Connected')
+        })
+    }
 }
 
-module.exports = BitfinexConnection
+module.exports = new BitfinexConnection(
+    bitfinex.bitfinexAPIKey,
+    bitfinex.bitfinexSecret
+)

@@ -2,7 +2,7 @@ const config = require('../config')
 const bodyParser = require('body-parser')
 const express = require('express')
 const app = express()
-const TelegramBot = require('../telegram/telegram-bot')
+const bot = require('../telegram/telegram-bot')
 
 app.use(bodyParser.json())
 app.use(
@@ -20,8 +20,6 @@ async function main(req, res) {
     // Start the app
     await bot.setWebhook(config.telegram.webhookURL)
 }
-
-const bot = new TelegramBot()
 
 app.get('/', (req, res) => res.send('Hello world!'))
 

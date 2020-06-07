@@ -14,16 +14,14 @@ const COMMAND_ENTITY = 'bot_command'
  * with the user commands
  *
  * @class TelegramBot
- * @extends CommandHandler
  */
-class TelegramBot extends CommandHandler {
+class TelegramBot {
     /**
      *Creates an instance of TelegramBot.
      * @param {string} apiKey - Bot apiKey.
      * @memberof TelegramBot
      */
     constructor(apiKey = telegram.telegramAPIKey) {
-        super()
         this.apiKey = apiKey
         this.webhookUrl = null
         this.url = `https://api.telegram.org/bot${this.apiKey}/`
@@ -105,7 +103,7 @@ class TelegramBot extends CommandHandler {
                         const [
                             chatID,
                             responseMessage,
-                        ] = await this.resolveCommand(message)
+                        ] = await CommandHandler.resolveCommand(message)
                         this.sendMessage(chatID, responseMessage)
                     }
                     break
@@ -120,4 +118,4 @@ class TelegramBot extends CommandHandler {
     }
 }
 
-module.exports = TelegramBot
+module.exports = new TelegramBot()
