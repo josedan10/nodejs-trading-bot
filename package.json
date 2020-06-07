@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "eslint": "^7.2.0",
+    "eslint-config-google": "^0.14.0",
     "eslint-config-standard": "^14.1.1",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-node": "^11.1.0",
@@ -37,6 +38,9 @@
     }
   },
   "lint-staged": {
-    "*.js": ["./node_modules/.bin/eslint — fix", "git add"]
+    "*.js": [
+      "./node_modules/.bin/eslint --fix",
+      "git add"
+    ]
   }
 }
