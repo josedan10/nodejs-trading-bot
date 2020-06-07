@@ -16,6 +16,7 @@ class TelegramBot {
     constructor(apiKey, chatID) {
         this.apiKey = apiKey
         this.chatID = chatID
+        this.webhookUrl = null
         this.url = `https://api.telegram.org/bot${this.apiKey}/`
 
         console.log('Bot initialized')
@@ -30,6 +31,23 @@ class TelegramBot {
     async getMe() {
         try {
             return axios.get(this.url + 'getMe')
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    /**
+     * Set the webhook on deploy server
+     *
+     * @param {URL} webhookUrl
+     * @return {Object} response
+     * @memberof TelegramBot
+     */
+    async setWebhook(webhookUrl) {
+        this.webhookUrl = webhookUrl
+
+        try {
+            return axios.get(`${this.url}setWebhook?url=${webhookUrl}`)
         } catch (err) {
             console.error(err)
         }

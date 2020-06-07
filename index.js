@@ -3,6 +3,9 @@ const config = require('./config')
 // Telegram Bot
 const TelegramBot = require('./telegram/telegram-bot')
 
+const express = require('express')
+const app = express()
+
 /**
  * Starts the main process of the app
  *
@@ -13,9 +16,14 @@ function main() {
         config.telegram.telegramAPIKey,
         config.telegram.telegramChatID
     )
-    console.log(bot)
-
-    console.log('Testing lint here')
+    bot.setWebhook(config.telegram.webhookURL)
 }
 
-main()
+app.get('/', function (req, res) {
+    main()
+    res.send('Hello World!')
+})
+
+app.listen(3000, function () {
+    console.log('Example app listening on port 3000!')
+})
