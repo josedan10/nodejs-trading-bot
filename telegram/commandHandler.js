@@ -12,10 +12,8 @@ class CommandHandler {
      * @memberof CommandHandler
      */
     async resolveCommand(message) {
-        return [
-            message.chat.id,
-            `Hello ${message.from.first_name}! Actually I'm under construction.`,
-        ]
+        const command = message.text.split('@')[0].slice(1) // Remove the '/' and the bot name
+        return [message.chat.id, command]
     }
 }
 

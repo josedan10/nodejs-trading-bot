@@ -56,11 +56,6 @@ describe('Test telegram commands responses', () => {
         }
         return telegramBot
             .resolveCommand(message)
-            .then((res) =>
-                expect(res).toEqual([
-                    message.chat.id,
-                    `Hello ${message.from.first_name}! Actually I'm under construction.`,
-                ])
-            )
+            .then((res) => expect(res).toEqual([message.chat.id, `start`]))
     })
 })

@@ -11,6 +11,7 @@ const config = {
     bitfinex: {
         bitfinexAPIKey: env.BITFINEX_API_KEY,
         bitfinexSecret: env.BITFINEX_API_SECRET,
+        bitfinexPublicURL: env.BITFINEX_PUBLIC_URL,
     },
 }
 
