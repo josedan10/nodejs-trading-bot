@@ -24,6 +24,6 @@ app.get('/', async function (req, res) {
     res.send('Hello World!')
 })
 
-app.listen(3000, async function () {
+app.listen(80, async function () {
     console.log('Example app listening on port 3000!')
 })
