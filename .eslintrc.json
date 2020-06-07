@@ -4,17 +4,20 @@
         "es2020": true,
         "node": true
     },
-    "plugins": [
-        "standard"
-    ],
     "extends": [
-        "standard"
+        "google",
+        "plugin:prettier/recommended"
     ],
     "parserOptions": {
         "ecmaVersion": 11
     },
     "rules": {
-        "require-jsdoc":"error"
+        "require-jsdoc":"error",
+        "prettier/prettier": ["error", {}, {
+            "usePrettierrc": true
+        }],
+        "semi": "off"
     },
-    "root": true
+    "root": true,
+    "reportUnusedDisableDirectives": true
 }
