@@ -10,20 +10,20 @@ const app = express()
  * Starts the main process of the app
  *
  */
-function main() {
+async function main() {
     // Start the app
     const bot = new TelegramBot(
         config.telegram.telegramAPIKey,
         config.telegram.telegramChatID
     )
-    bot.setWebhook(config.telegram.webhookURL)
+    await bot.setWebhook(config.telegram.webhookURL)
 }
 
-app.get('/', function (req, res) {
-    main()
+app.get('/', async function (req, res) {
+    await main()
     res.send('Hello World!')
 })
 
-app.listen(3000, function () {
+app.listen(3000, async function () {
     console.log('Example app listening on port 3000!')
 })
