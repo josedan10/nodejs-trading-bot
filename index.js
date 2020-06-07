@@ -1,7 +1,7 @@
 const config = require('./config')
 
 // Telegram Bot
-const TelegramBot = require('./telegram/bot')
+const TelegramBot = require('./telegram/telegram-bot')
 
 /**
  * Starts the main process of the app

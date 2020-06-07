@@ -17,6 +17,7 @@
   "author": "José Daniel Quintero",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.19.2",
     "dotenv": "^8.2.0",
     "socket.io": "^2.3.0"
   },
@@ -42,7 +43,7 @@
     "*.js": [
       "./node_modules/.bin/prettier --check --write --loglevel warn",
       "./node_modules/.bin/eslint --fix --ignore-path .gitignore",
-      "./node_modules/.bin/jest --watchAll"
+      "./node_modules/.bin/jest --findRelatedTests"
     ]
   }
 }
