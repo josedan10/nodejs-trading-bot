@@ -41,7 +41,8 @@
   "lint-staged": {
     "*.js": [
       "./node_modules/.bin/prettier --check --write --loglevel warn",
-      "./node_modules/.bin/eslint --fix --ignore-path .gitignore"
+      "./node_modules/.bin/eslint --fix --ignore-path .gitignore",
+      "./node_modules/.bin/jest --watchAll"
     ]
   }
 }
