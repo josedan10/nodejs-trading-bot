@@ -39,6 +39,7 @@
   },
   "lint-staged": {
     "*.js": [
+      "prettier --write",
       "./node_modules/.bin/eslint --fix",
       "git add"
     ]
