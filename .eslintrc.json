@@ -4,13 +4,17 @@
         "es2020": true,
         "node": true
     },
+    "plugins": [
+        "standard"
+    ],
     "extends": [
-        "google"
+        "standard"
     ],
     "parserOptions": {
         "ecmaVersion": 11
     },
     "rules": {
         "require-jsdoc":"error"
-    }
+    },
+    "root": true
 }
