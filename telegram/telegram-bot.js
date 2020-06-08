@@ -17,6 +17,7 @@ class TelegramBot {
         this.apiKey = apiKey
         this.webhookUrl = null
         this.url = `https://api.telegram.org/bot${this.apiKey}/`
+        this.routines = {}
     }
 
     /**

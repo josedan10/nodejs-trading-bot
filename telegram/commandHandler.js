@@ -1,4 +1,5 @@
 const bfx = require('../bitfinex/bfx')
+const routinesServer = require('../server/routines')
 const telegramBot = require('./telegram-bot')
 
 // Chat types
@@ -80,6 +81,18 @@ class CommandHandler {
             case 'stop':
                 bfx.stopWS()
                 return [message.chat.id, 'Stopping server']
+
+            case 'trade':
+                bfx.subscribeToCandles()
+                return [
+                    message.chat.id,
+                    'Starting to get trading info... Wait a moment...',
+                ]
+
+            case 'rutine':
+                // TODO: getargs of message
+                routinesServer.setRoutine('candlesStatus', '10min')
+                return [message.chat.id, 'Setting rutine update']
 
             default:
                 return [message.chat.id, 'Nothing to do, sorry!']
