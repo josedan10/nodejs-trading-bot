@@ -14,7 +14,7 @@ class ServerRoutine {
      * @memberof ServerRoutine
      */
     constructor() {
-        this.routines = []
+        this.routines = {}
     }
 
     /**

@@ -127,7 +127,7 @@ class BitfinexConnection {
             key: `trade:${this.candleTimeframe}:t${this.market}`, // 'trade:TIMEFRAME:SYMBOL'
         })
 
-        this.ws.send(msg)
+        this.ws && this.ws.send(msg)
     }
 
     // UPDATES VALIDATORS //////////////////////////////
