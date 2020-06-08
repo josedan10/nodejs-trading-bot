@@ -2,6 +2,7 @@ const config = require('../config')
 const bodyParser = require('body-parser')
 const express = require('express')
 const app = express()
+const CommandHandler = require('../telegram/commandHandler')
 const bot = require('../telegram/telegram-bot')
 
 app.use(bodyParser.json())
@@ -24,7 +25,7 @@ async function main(req, res) {
 app.get('/', (req, res) => res.send('Hello world!'))
 
 // Endpoints
-app.post('/', bot.handler.bind(bot))
+app.post('/', CommandHandler.handler.bind(CommandHandler))
 
 app.listen(80, async function () {
     main()

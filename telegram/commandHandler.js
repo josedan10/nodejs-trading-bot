@@ -1,12 +1,55 @@
 const bfx = require('../bitfinex/bfx')
 const telegramBot = require('./telegram-bot')
 
+// Chat types
+const PRIVATE_CHAT = 'private'
+const SUPERGROUP_CHAT = 'supergroup'
+
+// Entities
+const COMMAND_ENTITY = 'bot_command'
+
 /**
  * Bot Commands handler
  *
  * @class CommandHandler
  */
 class CommandHandler {
+    /**
+     * Bot Requests Handler
+     *
+     * @param {Object} req
+     * @param {Object} res
+     * @memberof CommandHandler
+     */
+    async handler(req, res) {
+        const { message } = req.body
+        const { text, from, chat } = message
+
+        try {
+            switch (chat.type) {
+                case PRIVATE_CHAT:
+                    await telegramBot.sendMessage(from.id, text)
+                    break
+
+                case SUPERGROUP_CHAT:
+                    if (message.entities[0].type === COMMAND_ENTITY) {
+                        const [
+                            chatID,
+                            responseMessage,
+                        ] = await this.resolveCommand(message)
+                        telegramBot.sendMessage(chatID, responseMessage)
+                    }
+                    break
+
+                default:
+                    console.log('Nothing to do')
+            }
+            res.send(text)
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
     /**
      *  Extract the command
      *
@@ -27,13 +70,16 @@ class CommandHandler {
      */
     async resolveCommand(message) {
         const command = await this.getCommand(message)
-        console.log(command)
 
         // Dispatcher
         switch (command) {
             case 'start':
-                await bfx.startWS(telegramBot.sendMessage)
+                bfx.startWS()
                 return [message.chat.id, 'Connecting to server']
+
+            case 'stop':
+                bfx.stopWS()
+                return [message.chat.id, 'Stopping server']
 
             default:
                 return [message.chat.id, 'Nothing to do, sorry!']

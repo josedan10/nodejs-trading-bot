@@ -1,13 +1,5 @@
 const axios = require('axios')
 const { telegram } = require('../config')
-const CommandHandler = require('./commandHandler')
-
-// Chat types
-const PRIVATE_CHAT = 'private'
-const SUPERGROUP_CHAT = 'supergroup'
-
-// Entities
-const COMMAND_ENTITY = 'bot_command'
 
 /**
  * Connect with telegram API endpoints and interacts
@@ -25,8 +17,6 @@ class TelegramBot {
         this.apiKey = apiKey
         this.webhookUrl = null
         this.url = `https://api.telegram.org/bot${this.apiKey}/`
-
-        console.log('Bot initialized')
     }
 
     /**
@@ -61,7 +51,7 @@ class TelegramBot {
     }
 
     /**
-     * Send 'Hello' message
+     * Send a message to selected channel_id
      *
      * @param {Int} chatID
      * @param {String} text
@@ -70,48 +60,15 @@ class TelegramBot {
      */
     async sendMessage(chatID, text) {
         try {
-            return axios.get(this.url + 'sendMessage', {
-                params: {
-                    chat_id: chatID,
-                    text,
-                },
-            })
-        } catch (err) {
-            console.error(err)
-        }
-    }
-
-    /**
-     * Bot Requests Handler
-     *
-     * @param {Object} req
-     * @param {Object} res
-     * @memberof TelegramBot
-     */
-    async handler(req, res) {
-        const { message } = req.body
-        const { text, from, chat } = message
-
-        try {
-            switch (chat.type) {
-                case PRIVATE_CHAT:
-                    await this.sendMessage(from.id, text)
-                    break
-
-                case SUPERGROUP_CHAT:
-                    if (message.entities[0].type === COMMAND_ENTITY) {
-                        const [
-                            chatID,
-                            responseMessage,
-                        ] = await CommandHandler.resolveCommand(message)
-                        this.sendMessage(chatID, responseMessage)
-                    }
-                    break
-
-                default:
-                    console.log('Nothing to do')
-            }
-            res.send(text)
+            return axios
+                .get(this.url + 'sendMessage', {
+                    params: {
+                        chat_id: chatID,
+                        text,
+                    },
+                })
+                .then((res) => res)
+                .catch((err) => err)
         } catch (err) {
             console.error(err)
         }

@@ -19,20 +19,42 @@ class BitfinexConnection {
         this.APIKey = APIKey
         this.APISecret = APISecret
         this.ws = null
+        this.candleStatus = null
+        this.candleTimeframe = '1h' // By default 1 hour
+        this.market = 'BTCUSD'
+        this.wallets = null
     }
 
     /**
      * Starts the websocket connection
      *
      * @memberof BitfinexConnection
+     * @return {Websocket}
      */
-    async startWS() {
+    startWS() {
         try {
             this.ws = new WS(bitfinex.bitfinexPublicURL)
             this.setup()
+            return this.ws
         } catch (err) {
             console.error(err)
             return 'Connection failed'
+        }
+    }
+
+    /**
+     *  Disconnects from websocket server
+     *
+     * @return {Boolean} connection closed succesfully
+     * @memberof BitfinexConnection
+     */
+    stopWS() {
+        try {
+            this.ws.close()
+            return true
+        } catch (err) {
+            console.error(err)
+            return err
         }
     }
 
@@ -42,9 +64,20 @@ class BitfinexConnection {
      * @memberof BitfinexConnection
      */
     setup() {
-        this.ws.on('open', function () {
-            telegramBot.sendMessage(telegram.telegramChatID, 'Connected')
-        })
+        this.ws
+            .on('open', () => {
+                telegramBot.sendMessage(
+                    telegram.telegramChatID,
+                    'Connected to websocket server'
+                )
+            })
+            .on('close', () => {
+                telegramBot.sendMessage(
+                    telegram.telegramChatID,
+                    'Disconnected from websocket server'
+                )
+            })
+            .on('message', (msg) => msg)
     }
 }
 

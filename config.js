@@ -7,6 +7,7 @@ const config = {
         telegramAPIKey: env.TELEGRAM_API_KEY,
         telegramChatID: env.TELEGRAM_CHAT_ID,
         webhookURL: env.TELEGRAM_WEBHOOK_URL,
+        telegramAPIURL: env.TELEGRAM_API_URL,
     },
     bitfinex: {
         bitfinexAPIKey: env.BITFINEX_API_KEY,
