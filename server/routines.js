@@ -29,18 +29,28 @@ class ServerRoutine {
 
         telegramBot.sendMessage(
             telegram.telegramChatID,
-            bfx.candleStatus.candle.toString()
+            bfx.candleStatus.candle
+                ? bfx.candleStatus.candle.toString()
+                : 'Rutina fijada'
         )
 
-        if (_this.routines[statusName]) {
-            // It's not undefined or null
+        const setRoutine = () => {
             _this.routines[statusName] = new CronJob('* * * * *', () => {
                 telegramBot.sendMessage(
                     telegram.telegramChatID,
-                    bfx.candleStatus.candle.toString()
+                    bfx.candleStatus.candle
+                        ? bfx.candleStatus.candle.toString()
+                        : 'Rutina fijada'
                 )
             })
+
+            _this.routines[statusName].start()
         }
+
+        // It's not undefined or null
+        if (_this.routines[statusName]) _this.routines[statusName].stop()
+
+        setRoutine()
     }
 }
 

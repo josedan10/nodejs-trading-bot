@@ -9,7 +9,7 @@ describe('Tests of telegram Bot', () => {
         return telegramBot.getMe().then((data) => {
             expect(data.status).toBe(200)
         })
-    }, 8000)
+    })
 
     test('should set webhook', async () => {
         return telegramBot.setWebhook(webhookURL).then(({ data }) => {
