@@ -2,6 +2,7 @@ const CronJob = require('cron').CronJob
 const { telegram } = require('../config')
 const telegramBot = require('../telegram/telegram-bot')
 const bfx = require('../bitfinex/bfx')
+const moment = require('moment')
 
 /**
  * Routines controller
@@ -27,21 +28,36 @@ class ServerRoutine {
     async setRoutine(statusName, timeFrame) {
         const _this = this
 
-        telegramBot.sendMessage(
-            telegram.telegramChatID,
-            bfx.candleStatus.candle
-                ? bfx.candleStatus.candle.toString()
-                : 'Rutina fijada'
-        )
-
         const setRoutine = () => {
-            _this.routines[statusName] = new CronJob('* * * * *', () => {
-                telegramBot.sendMessage(
-                    telegram.telegramChatID,
-                    bfx.candleStatus.candle
-                        ? bfx.candleStatus.candle.toString()
-                        : 'Rutina fijada'
-                )
+            _this.routines[statusName] = new CronJob('*/3 * * * *', () => {
+                const { candle } = bfx.candleStatus
+
+                if (candle) {
+                    const formatedCandle = `
+                    **Update (timeframe = 1H)**
+                    ----------
+
+                    Last price: $${candle[2].toFixed(2)}
+
+                    - **time:** ${moment(candle[0]).format(
+                        'DD/MM/YYYY - HH:mm'
+                    )}.
+                    - **open:** $${candle[1].toFixed(2)}.
+                    - **high:** $${candle[3].toFixed(2)}.
+                    - **low:** $${candle[4].toFixed(2)}.
+                    - **close:** $${candle[2].toFixed(2)}.
+                    - **volume:** ${candle[5]} BTC.
+                    `
+                    telegramBot.sendMessage(
+                        telegram.telegramChatID,
+                        formatedCandle
+                    )
+                } else {
+                    telegramBot.sendMessage(
+                        telegram.telegramChatID,
+                        'No hay datos disponibles aún'
+                    )
+                }
             })
 
             _this.routines[statusName].start()

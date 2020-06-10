@@ -56,16 +56,18 @@ class TelegramBot {
      *
      * @param {Int} chatID
      * @param {String} text
+     * @param {String} parse_mode
      * @return {Object} Telegram Message
      * @memberof TelegramBot
      */
-    async sendMessage(chatID, text) {
+    async sendMessage(chatID, text, parse_mode = '') {
         try {
             return axios
                 .get(this.url + 'sendMessage', {
                     params: {
                         chat_id: chatID,
                         text,
+                        parse_mode,
                     },
                 })
                 .then((res) => res)

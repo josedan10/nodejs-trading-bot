@@ -19,7 +19,11 @@ describe('Tests of telegram Bot', () => {
 
     test('Should send a "Hello" message to the chat', async () => {
         return telegramBot
-            .sendMessage(telegramChatID, 'Hello from jest test')
+            .sendMessage(
+                telegramChatID,
+                '**Hello from jest test**',
+                'markdownv2'
+            )
             .then(({ data }) => {
                 expect(data.ok).toBe(true)
             })

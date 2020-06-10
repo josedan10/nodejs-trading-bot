@@ -89,10 +89,10 @@ class CommandHandler {
                     'Starting to get trading info... Wait a moment...',
                 ]
 
-            case 'rutine':
+            case 'routine':
                 // TODO: getargs of message
                 routinesServer.setRoutine('candlesStatus', '10min')
-                return [message.chat.id, 'Setting rutine update']
+                return [message.chat.id, 'Setting routine update']
 
             default:
                 return [message.chat.id, 'Nothing to do, sorry!']
