@@ -34,23 +34,35 @@ class ServerRoutine {
 
                 if (candle) {
                     const formatedCandle = `
-                    **Update (timeframe = 1H)**
-                    ----------
+                    *Update \\(timeframe \\= 1H\\)*
 
-                    Last price: $${candle[2].toFixed(2)}
+                    LAST PRICE: $${candle[2]
+                        .toFixed(2)
+                        .toString()
+                        .replace('.', '\\.')}
 
-                    - **time:** ${moment(candle[0]).format(
-                        'DD/MM/YYYY - HH:mm'
-                    )}.
-                    - **open:** $${candle[1].toFixed(2)}.
-                    - **high:** $${candle[3].toFixed(2)}.
-                    - **low:** $${candle[4].toFixed(2)}.
-                    - **close:** $${candle[2].toFixed(2)}.
-                    - **volume:** ${candle[5]} BTC.
-                    `
+                    *time:* ${moment(candle[0]).format('DD/MM/YYYY  HH:mm')}
+                    *open:* $${candle[1]
+                        .toFixed(2)
+                        .toString()
+                        .replace('.', '\\.')}
+                    *high:* $${candle[3]
+                        .toFixed(2)
+                        .toString()
+                        .replace('.', '\\.')}
+                    *low:* $${candle[4]
+                        .toFixed(2)
+                        .toString()
+                        .replace('.', '\\.')}
+                    *close:* $${candle[2]
+                        .toFixed(2)
+                        .toString()
+                        .replace('.', '\\.')}
+                    *volume:* ${candle[5].toString().replace('.', '\\.')} BTC`
                     telegramBot.sendMessage(
                         telegram.telegramChatID,
-                        formatedCandle
+                        formatedCandle,
+                        'MarkdownV2'
                     )
                 } else {
                     telegramBot.sendMessage(

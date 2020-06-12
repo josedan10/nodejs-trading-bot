@@ -70,10 +70,17 @@ class TelegramBot {
                         parse_mode,
                     },
                 })
-                .then((res) => res)
-                .catch((err) => err)
+                .then((res) => {
+                    // console.log('Ok')
+                    return res
+                })
+                .catch((err) => {
+                    // console.error(err)
+                    return err
+                })
         } catch (err) {
-            console.error(err)
+            // console.error(err)
+            return err
         }
     }
 }

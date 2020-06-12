@@ -33,7 +33,10 @@ class CommandHandler {
                     break
 
                 case SUPERGROUP_CHAT:
-                    if (message.entities[0].type === COMMAND_ENTITY) {
+                    if (
+                        message.entities &&
+                        message.entities[0].type === COMMAND_ENTITY
+                    ) {
                         const [
                             chatID,
                             responseMessage,
@@ -45,7 +48,7 @@ class CommandHandler {
                 default:
                     console.log('Nothing to do')
             }
-            res.send(text)
+            res.send(text || 'Chat event')
         } catch (err) {
             console.error(err)
         }
@@ -59,7 +62,8 @@ class CommandHandler {
      * @memberof CommandHandler
      */
     async getCommand(message) {
-        return message.text.split('@')[0].slice(1) // Remove the '/' and the bot name
+        // Remove the '/' and the bot name
+        return message.text ? message.text.split('@')[0].slice(1) : null
     }
 
     /**

@@ -1,0 +1,9 @@
+BITFINEX_API_KEY = VI7OzrHvrxu7JB9HZYfpP9dzer1fIrKlwhcqosVJueB
+BITFINEX_API_SECRET = P2xk3krYkfiCagthG5xgMdbl0ZyZ3tBBoxmghtivDMO
+BITFINEX_PUBLIC_URL = wss://api-pub.bitfinex.com/ws/2
+BITFINEX_AUTHENTICATED_URL = wss://api.bitfinex.com/ws/2
+
+TELEGRAM_API_KEY = 1099056012:AAFqXGQz5IkMdhCuypx961UfNwCNacbgORo
+TELEGRAM_CHAT_ID = -1001478666904
+TELEGRAM_WEBHOOK_URL = https://019dfa630151.ngrok.io
+TELEGRAM_API_URL = https://api.telegram.org/bot

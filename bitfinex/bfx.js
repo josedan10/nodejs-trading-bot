@@ -157,7 +157,7 @@ class BitfinexConnection {
             this.candleStatus.candle === undefined
         const isTheLatestUpdate =
             this.candleStatus.candle &&
-            moment(this.candleStatus.candle[0] / 1000).isBefore(
+            moment(this.candleStatus.candle[0] / 1000).isSameOrBefore(
                 msg[1][0] / 1000
             )
 
