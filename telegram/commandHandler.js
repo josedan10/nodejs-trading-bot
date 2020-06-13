@@ -23,7 +23,8 @@ class CommandHandler {
      * @memberof CommandHandler
      */
     async handler(req, res) {
-        const { message } = req.body
+        let { message } = req.body
+        if (!message) message = req.body.edited_message
         const { text, from, chat } = message
 
         try {
