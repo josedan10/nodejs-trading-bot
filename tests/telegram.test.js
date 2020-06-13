@@ -58,7 +58,7 @@ describe('Test telegram commands responses', () => {
             ],
         }
         return CommandHandler.getCommand(message).then((res) =>
-            expect(res).toEqual(`start`)
+            expect(res).toEqual({ args: [], command: 'start' })
         )
     })
 })

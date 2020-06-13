@@ -64,7 +64,11 @@ class CommandHandler {
      */
     async getCommand(message) {
         // Remove the '/' and the bot name
-        return message.text ? message.text.split('@')[0].slice(1) : null
+        if (message.text) {
+            const command = message.text.split('@')[0].slice(1)
+            const args = message.text.split(' ').slice(1)
+            return { command, args }
+        } else return null
     }
 
     /**
@@ -75,7 +79,7 @@ class CommandHandler {
      * @memberof CommandHandler
      */
     async resolveCommand(message) {
-        const command = await this.getCommand(message)
+        const { command, args } = await this.getCommand(message)
 
         // Dispatcher
         switch (command) {
@@ -96,7 +100,7 @@ class CommandHandler {
 
             case 'routine':
                 // TODO: getargs of message
-                routinesServer.setRoutine('candlesStatus', '10min')
+                routinesServer.setRoutine('candlesStatus', args)
                 return [message.chat.id, 'Setting routine update']
 
             default:

@@ -22,18 +22,33 @@ class ServerRoutine {
      * Set a routine for 5 minutes meanwhile
      *
      * @param {*} statusName
-     * @param {*} timeFrame
+     * @param {Array} timeFrame
      * @memberof TelegramBot
      */
     async setRoutine(statusName, timeFrame) {
         const _this = this
 
-        const setRoutine = () => {
-            _this.routines[statusName] = new CronJob('*/3 * * * *', () => {
-                const { candle } = bfx.candleStatus
+        if (timeFrame === null || !timeFrame.length) {
+            telegramBot.sendMessage(
+                telegram.telegramChatID,
+                'I need the time interval to set the routine. Type `/help` to see more details.'
+            )
+            return
+        }
 
-                if (candle) {
-                    const formatedCandle = `
+        const num = timeFrame[0].match(/\d+/g)[0]
+        const unit = timeFrame[0].match(/[a-zA-Z]+/g)[0]
+
+        const setRoutine = () => {
+            _this.routines[statusName] = new CronJob(
+                `*${unit === 'mins' ? '/' + num : ''} *${
+                    unit === 'hrs' ? '/' + num : ''
+                } * * *`,
+                () => {
+                    const { candle } = bfx.candleStatus
+
+                    if (candle) {
+                        const formatedCandle = `
                     *Update \\(timeframe \\= 1H\\)*
 
                     LAST PRICE: $${candle[2]
@@ -59,18 +74,19 @@ class ServerRoutine {
                         .toString()
                         .replace('.', '\\.')}
                     *volume:* ${candle[5].toString().replace('.', '\\.')} BTC`
-                    telegramBot.sendMessage(
-                        telegram.telegramChatID,
-                        formatedCandle,
-                        'MarkdownV2'
-                    )
-                } else {
-                    telegramBot.sendMessage(
-                        telegram.telegramChatID,
-                        'No hay datos disponibles aún'
-                    )
+                        telegramBot.sendMessage(
+                            telegram.telegramChatID,
+                            formatedCandle,
+                            'MarkdownV2'
+                        )
+                    } else {
+                        telegramBot.sendMessage(
+                            telegram.telegramChatID,
+                            'No hay datos disponibles aún'
+                        )
+                    }
                 }
-            })
+            )
 
             _this.routines[statusName].start()
         }
