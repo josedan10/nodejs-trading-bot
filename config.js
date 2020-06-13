@@ -14,6 +14,10 @@ const config = {
         bitfinexSecret: env.BITFINEX_API_SECRET,
         bitfinexPublicURL: env.BITFINEX_PUBLIC_URL,
     },
+    server: {
+        port: env.SERVER_PORT,
+        url: env.SERVER_URL,
+    },
 }
 
 module.exports = config

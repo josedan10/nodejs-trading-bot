@@ -1,8 +1,11 @@
 {
   "name": "telegram-trading-bot",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Tading bot for telegram using node.js",
   "main": "index.js",
+  "engines": {
+    "node": "12.x"
+  },
   "scripts": {
     "start": "node index.js",
     "watch": "nodemon index.js",

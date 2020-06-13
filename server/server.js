@@ -1,6 +1,8 @@
 const config = require('../config')
 const bodyParser = require('body-parser')
 const express = require('express')
+
+const { server } = require('../config')
 const app = express()
 const CommandHandler = require('../telegram/commandHandler')
 const bot = require('../telegram/telegram-bot')
@@ -27,7 +29,7 @@ app.get('/', (req, res) => res.send('Hello world!'))
 // Endpoints
 app.post('/', CommandHandler.handler.bind(CommandHandler))
 
-app.listen(80, async function () {
+app.listen(server.port, async function () {
     main()
-    console.log('Example app listening on port 80!')
+    console.log(`The server is running on port ${server.port}`)
 })
