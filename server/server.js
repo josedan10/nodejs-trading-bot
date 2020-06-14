@@ -1,11 +1,11 @@
-const config = require('../config')
+// const config = require('../config')
 const bodyParser = require('body-parser')
 const express = require('express')
 
 const { server } = require('../config')
 const app = express()
 const CommandHandler = require('../telegram/commandHandler')
-const bot = require('../telegram/telegram-bot')
+// const bot = require('../telegram/telegram-bot')
 
 app.use(bodyParser.json())
 app.use(
@@ -19,15 +19,15 @@ app.use(
  *  @param {Object} req
  *  @param {Object} res
  */
-async function main(req, res) {
-    // Start the app
-    await bot.setWebhook(config.telegram.webhookURL)
-    console.log('Started the app')
-}
+// async function main(req, res) {
+//     // Start the app
+//     await bot.setWebhook(config.telegram.webhookURL)
+//     console.log('Started the app')
+// }
 
 app.get('/', async (req, res) => {
     try {
-        await main()
+        // await main()
         res.send('Hello world!')
     } catch (err) {
         console.error(err)
