@@ -84,7 +84,7 @@ class CommandHandler {
         // Dispatcher
         switch (command) {
             case 'start':
-                bfx.startWS()
+                await bfx.startWS()
                 return [message.chat.id, 'Connecting to server']
 
             case 'stop':
