@@ -31,7 +31,7 @@ app.post('/', CommandHandler.handler.bind(CommandHandler))
 
 app.listen(server.port, async function () {
     try {
-        main()
+        await main()
         console.log(`The server is running on port ${server.port}`)
     } catch (err) {
         console.log(err)
