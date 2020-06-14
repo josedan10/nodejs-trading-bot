@@ -16,7 +16,7 @@ const config = {
             env.BITFINEX_PUBLIC_URL || 'wss://api-pub.bitfinex.com/ws/2',
     },
     server: {
-        port: env.SERVER_PORT || 3000,
+        port: env.SERVER_PORT || 5000,
         url: env.SERVER_URL,
     },
 }
