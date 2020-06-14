@@ -25,16 +25,18 @@ async function main(req, res) {
     console.log('Started the app')
 }
 
-app.get('/', (req, res) => res.send('Hello world!'))
+app.get('/', async (req, res) => {
+    try {
+        await main()
+        res.send('Hello world!')
+    } catch (err) {
+        console.error(err)
+    }
+})
 
 // Endpoints
 app.post('/', CommandHandler.handler.bind(CommandHandler))
 
-app.listen(server.port, async function () {
-    try {
-        await main()
-        console.log(`The server is running on port ${server.port}`)
-    } catch (err) {
-        console.log(err)
-    }
+app.listen(server.port, function () {
+    console.log(`The server is running on port ${server.port}`)
 })
