@@ -30,6 +30,10 @@ app.get('/', (req, res) => res.send('Hello world!'))
 app.post('/', CommandHandler.handler.bind(CommandHandler))
 
 app.listen(server.port, async function () {
-    main()
-    console.log(`The server is running on port ${server.port}`)
+    try {
+        main()
+        console.log(`The server is running on port ${server.port}`)
+    } catch (err) {
+        console.log(err)
+    }
 })
