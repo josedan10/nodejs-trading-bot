@@ -10,6 +10,7 @@
     "start": "node index.js",
     "watch": "nodemon index.js",
     "pretest": "./node_modules/.bin/eslint --ignore-path .gitignore . --fix",
+    "release": "./node_modules/.bin/standard-version",
     "test": "./node_modules/.bin/jest --watchAll --detectOpenHandles"
   },
   "keywords": [
@@ -44,7 +45,8 @@
     "husky": "^4.2.5",
     "jest": "^26.0.1",
     "lint-staged": "^10.2.10",
-    "prettier": "^2.0.5"
+    "prettier": "^2.0.5",
+    "standard-version": "^8.0.0"
   },
   "husky": {
     "hooks": {
