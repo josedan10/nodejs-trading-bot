@@ -1,6 +1,8 @@
 const bfx = require('../bitfinex/bfx')
 const routinesServer = require('../server/routines')
 const telegramBot = require('./telegram-bot')
+const fs = require('fs')
+const path = require('path')
 
 // Chat types
 const PRIVATE_CHAT = 'private'
@@ -8,6 +10,12 @@ const SUPERGROUP_CHAT = 'supergroup'
 
 // Entities
 const COMMAND_ENTITY = 'bot_command'
+
+// Read the help.md file
+const readHelp = () =>
+    fs.readFileSync(path.resolve(path.join('telegram/', 'help.md')), {
+        encoding: 'utf-8',
+    })
 
 /**
  * Bot Commands handler
@@ -41,8 +49,13 @@ class CommandHandler {
                         const [
                             chatID,
                             responseMessage,
+                            parseMode = '',
                         ] = await this.resolveCommand(message)
-                        telegramBot.sendMessage(chatID, responseMessage)
+                        telegramBot.sendMessage(
+                            chatID,
+                            responseMessage,
+                            parseMode
+                        )
                     }
                     break
 
@@ -99,9 +112,11 @@ class CommandHandler {
                 ]
 
             case 'routine':
-                // TODO: getargs of message
                 routinesServer.setRoutine('candlesStatus', args)
                 return [message.chat.id, 'Setting routine update']
+
+            case 'help':
+                return [message.chat.id, readHelp(), 'MarkdownV2']
 
             default:
                 return [message.chat.id, 'Nothing to do, sorry!']

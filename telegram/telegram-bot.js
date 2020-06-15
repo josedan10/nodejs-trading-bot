@@ -71,15 +71,15 @@ class TelegramBot {
                     },
                 })
                 .then((res) => {
-                    // console.log('Ok')
+                    console.log('Ok')
                     return res
                 })
                 .catch((err) => {
-                    // console.error(err)
+                    console.error(err)
                     return err
                 })
         } catch (err) {
-            // console.error(err)
+            console.error(err)
             return err
         }
     }
