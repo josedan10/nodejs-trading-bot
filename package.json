@@ -10,7 +10,7 @@
     "start": "node index.js",
     "watch": "nodemon index.js",
     "pretest": "./node_modules/.bin/eslint --ignore-path .gitignore . --fix",
-    "release": "./node_modules/.bin/standard-version",
+    "release": "./node_modules/.bin/conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "test": "./node_modules/.bin/jest --watchAll --detectOpenHandles"
   },
   "keywords": [
