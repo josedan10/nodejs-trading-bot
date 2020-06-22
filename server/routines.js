@@ -1,5 +1,5 @@
 const CronJob = require('cron').CronJob
-const { telegram } = require('../config')
+// const { telegram } = require('../config')
 const telegramBot = require('../telegram/telegram-bot')
 const bfx = require('../bitfinex/bfx')
 const moment = require('moment')
@@ -22,15 +22,19 @@ class ServerRoutine {
      * Set a routine for 5 minutes meanwhile
      *
      * @param {*} statusName
-     * @param {Array} timeFrame
+     * @param {Array} timeFrame,
+     * @param {Integer} chatID
      * @memberof TelegramBot
+     *
+     * WARNING: THIS IS NOT AN OPTIMAL PROCESS
+     * This can saturate the server memory of routines. Handle this of a better way for all chats
      */
-    async setRoutine(statusName, timeFrame) {
+    async setRoutine(statusName, timeFrame, chatID) {
         const _this = this
 
         if (timeFrame === null || !timeFrame.length) {
             telegramBot.sendMessage(
-                telegram.telegramChatID,
+                chatID,
                 'I need the time interval to set the routine. Type `/help` to see more details.'
             )
             return
@@ -76,13 +80,13 @@ class ServerRoutine {
                         .replace('.', '\\.')}
                     *volume:* ${candle[5].toString().replace('.', '\\.')} BTC`
                     telegramBot.sendMessage(
-                        telegram.telegramChatID,
+                        chatID,
                         formatedCandle,
                         'MarkdownV2'
                     )
                 } else {
                     telegramBot.sendMessage(
-                        telegram.telegramChatID,
+                        chatID,
                         'No hay datos disponibles aún'
                     )
                 }
