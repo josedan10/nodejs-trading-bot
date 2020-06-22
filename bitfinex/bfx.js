@@ -1,5 +1,5 @@
 // const axios = require('axios')
-const WS = require('ws')
+const WS = require('ws-reconnect')
 const moment = require('moment')
 const { bitfinex, telegram } = require('../config')
 const telegramBot = require('../telegram/telegram-bot')
@@ -45,7 +45,11 @@ class BitfinexConnection {
      */
     startWS() {
         try {
-            this.ws = new WS(bitfinex.bitfinexPublicURL)
+            this.ws = new WS(bitfinex.bitfinexPublicURL, {
+                retryCount: 3, // default is 2
+                reconnectInterval: 3, // default is 5
+            })
+            this.ws.start()
             this.setup()
             return this.ws
         } catch (err) {
@@ -62,7 +66,7 @@ class BitfinexConnection {
      */
     stopWS() {
         try {
-            this.ws.close()
+            this.ws.destroy()
             return true
         } catch (err) {
             console.error(err)
@@ -76,17 +80,25 @@ class BitfinexConnection {
      * @memberof BitfinexConnection
      */
     setup() {
-        this.ws
-            .on('open', () => {
+        const _this = this
+
+        _this.ws
+            .on('connect', () => {
                 telegramBot.sendMessage(
                     telegram.telegramChatID,
                     'Connected to websocket server'
                 )
             })
-            .on('close', () => {
+            .on('destroyed', () => {
                 telegramBot.sendMessage(
                     telegram.telegramChatID,
                     'Disconnected from websocket server'
+                )
+            })
+            .on('reconnect', () => {
+                telegramBot.sendMessage(
+                    telegram.telegramChatID,
+                    'Trying to reconnect to websocket server...'
                 )
             })
             .on('message', (msg) => {
