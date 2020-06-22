@@ -33,12 +33,27 @@ class CommandHandler {
     async handler(req, res) {
         let { message } = req.body
         if (!message) message = req.body.edited_message
-        const { text, from, chat } = message
+        const { text, chat } = message
 
         try {
             switch (chat.type) {
                 case PRIVATE_CHAT:
-                    await telegramBot.sendMessage(from.id, text)
+                    if (
+                        message.entities &&
+                        message.entities[0].type === COMMAND_ENTITY
+                    ) {
+                        const [
+                            chatID,
+                            responseMessage,
+                            parseMode = '',
+                        ] = await this.resolveCommand(message)
+                        telegramBot.sendMessage(
+                            chatID,
+                            responseMessage,
+                            parseMode
+                        )
+                    }
+
                     break
 
                 case SUPERGROUP_CHAT:
@@ -77,9 +92,19 @@ class CommandHandler {
      */
     async getCommand(message) {
         // Remove the '/' and the bot name
+        let command
+        let args
+        let messageSliced
+
         if (message.text) {
-            const command = message.text.split('@')[0].slice(1)
-            const args = message.text.split(' ').slice(1)
+            if (message.chat.type === SUPERGROUP_CHAT) {
+                command = message.text.split('@')[0].slice(1)
+                args = message.text.split(' ').slice(1)
+            } else {
+                messageSliced = message.text.split(' ')
+                command = messageSliced[0].slice(1)
+                args = messageSliced.slice(1)
+            }
             return { command, args }
         } else return null
     }
@@ -112,7 +137,11 @@ class CommandHandler {
                 ]
 
             case 'routine':
-                routinesServer.setRoutine('candlesStatus', args)
+                routinesServer.setRoutine(
+                    'candlesStatus',
+                    args,
+                    message.chat.id
+                )
                 return [message.chat.id, 'Setting routine update']
 
             case 'help':
