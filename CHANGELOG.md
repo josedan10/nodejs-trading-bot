@@ -1,14 +1,13 @@
-# Changelog
-
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
-
-## [1.1.0](https://github.com/josedan10/nodejs-trading-bot/compare/v1.0.4...v1.1.0) (2020-06-22)
+<a name="1.1.0"></a>
+# [1.1.0](https://github.com/josedan10/nodejs-trading-bot/compare/v1.0.4...v1.1.0) (2020-06-22)
 
 
 ### Features
 
-* :sparkles: Reconnection ([476fc25](https://github.com/josedan10/nodejs-trading-bot/commit/476fc251a7eaa021bfce87897379d46fa22f23bc))
-* :sparkles: the bot commands now works on private chats ([d602fa5](https://github.com/josedan10/nodejs-trading-bot/commit/d602fa5c37adae0fb96445fb6594b090d2036ed6))
+* :sparkles: Reconnection ([476fc25](https://github.com/josedan10/nodejs-trading-bot/commit/476fc25))
+* :sparkles: the bot commands now works on private chats ([d602fa5](https://github.com/josedan10/nodejs-trading-bot/commit/d602fa5))
+
+
 
 <a name="1.0.4"></a>
 ## [1.0.4](https://github.com/josedan10/nodejs-trading-bot/compare/v1.0.3...v1.0.4) (2020-06-15)
@@ -47,3 +46,6 @@ All notable changes to this project will be documented in this file. See [standa
 
 <a name="1.0.0"></a>
 # 1.0.0 (2020-06-14)
+
+
+
