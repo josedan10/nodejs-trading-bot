@@ -4,8 +4,14 @@ const { env } = process
 
 const config = {
     telegram: {
-        telegramAPIKey: env.TELEGRAM_API_KEY,
-        telegramChatID: env.TELEGRAM_CHAT_ID,
+        telegramAPIKey:
+            env.APP_ENV === 'debug'
+                ? env.TEST_TELEGRAM_BOT_API_KEY
+                : env.TELEGRAM_API_KEY,
+        telegramChatID:
+            env.APP_ENV === 'debug'
+                ? env.TEST_TELEGRAM_CHAT_ID
+                : env.TELEGRAM_CHAT_ID,
         webhookURL: env.TELEGRAM_WEBHOOK_URL,
         telegramAPIURL: env.TELEGRAM_API_URL || 'https://api.telegram.org/bot',
     },
