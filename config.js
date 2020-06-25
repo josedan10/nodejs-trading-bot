@@ -20,10 +20,14 @@ const config = {
         bitfinexSecret: env.BITFINEX_API_SECRET,
         bitfinexPublicURL:
             env.BITFINEX_PUBLIC_URL || 'wss://api-pub.bitfinex.com/ws/2',
+        bitfinexRESTPublicURL: env.BITFINEX_PUBLIC_REST_URL,
     },
     server: {
         port: env.SERVER_PORT || env.PORT || 5000,
         url: env.SERVER_URL,
+    },
+    client: {
+        url: env.CLIENT_URL,
     },
 }
 
