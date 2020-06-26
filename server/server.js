@@ -45,7 +45,10 @@ app.use('/api', chartRouter)
 // Main view
 app.get('/', async (req, res) => {
     try {
-        res.send('Hello world!')
+        res.send(`
+            <h1>NoPythonBot server: </h1>
+            <p>The client app is running on server ${config.client.url}</p>
+        `)
     } catch (err) {
         console.error(err)
     }

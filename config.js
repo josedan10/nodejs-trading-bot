@@ -27,7 +27,7 @@ const config = {
         url: env.SERVER_URL,
     },
     client: {
-        url: env.CLIENT_URL,
+        url: env.APP_ENV === 'debug' ? env.CLIENT_TEST_URL : env.CLIENT_URL,
     },
 }
 
