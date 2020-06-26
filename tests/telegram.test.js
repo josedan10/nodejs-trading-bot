@@ -28,6 +28,14 @@ describe('Tests of telegram Bot', () => {
                 expect(data.ok).toBe(true)
             })
     })
+
+    test('Should send an image to the chat', async () => {
+        return telegramBot
+            .sendPhoto(telegramChatID, 'static/test.png')
+            .then(({ data }) => {
+                expect(data.ok).toBe(true)
+            })
+    })
 })
 
 describe('Test telegram commands responses', () => {
