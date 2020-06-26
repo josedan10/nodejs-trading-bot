@@ -147,7 +147,13 @@ class CommandHandler {
 
             case 'screenshot':
                 const fileName = await takeScreenshot()
-                await telegramBot.sendPhoto(message.chat.id, fileName)
+                if (fileName !== undefined)
+                    await telegramBot.sendPhoto(message.chat.id, fileName)
+                else
+                    return [
+                        message.chat.id,
+                        `[ERROR] the file ${fileName} is invalid`,
+                    ]
 
                 return [message.chat.id, 'Screenshot!']
 
