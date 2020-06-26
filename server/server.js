@@ -18,11 +18,7 @@ app.use(
     })
 )
 
-app.use(
-    cors({
-        origin: client.url,
-    })
-)
+app.use(cors())
 
 /**
  * Starts the main process of the app
@@ -47,7 +43,7 @@ app.get('/', async (req, res) => {
     try {
         res.send(`
             <h1>NoPythonBot server: </h1>
-            <p>The client app is running on server ${config.client.url}</p>
+            <p>The client app is running on server ${client.url}</p>
         `)
     } catch (err) {
         console.error(err)
