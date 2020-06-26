@@ -11,7 +11,7 @@ const { client } = require('../config')
  */
 async function takeScreenshot() {
     try {
-        const fileName = `chartBTC-${moment.now()}.png`
+        const fileName = `screen_chartBTC-${moment.now()}.png`
         const screenshotsPath = 'static/screenshots/'
         await captureWebsite.file(client.url, `${screenshotsPath + fileName}`)
         return screenshotsPath + fileName
