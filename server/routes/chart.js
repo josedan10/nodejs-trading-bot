@@ -7,8 +7,14 @@ const router = new express.Router()
 
 router.get('/chart', async (req, res) => {
     try {
+        const { limit } = req.query
         const response = await Axios.get(
-            `${bitfinex.bitfinexRESTPublicURL}/candles/trade:3h:tBTCUSD/hist`
+            `${bitfinex.bitfinexRESTPublicURL}/candles/trade:3h:tBTCUSD/hist`,
+            {
+                params: {
+                    limit: limit || 120,
+                },
+            }
         )
         res.send(JSON.stringify(response.data))
     } catch (err) {
