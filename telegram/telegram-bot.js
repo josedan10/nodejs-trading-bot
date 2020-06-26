@@ -75,12 +75,44 @@ class TelegramBot {
                     return res
                 })
                 .catch((err) => {
-                    console.error(err)
-                    return err
+                    throw Error(
+                        `[TelegramBot] Error sending a message:${err.toString()}`
+                    )
                 })
         } catch (err) {
-            console.error(err)
-            return err
+            throw Error(
+                `[TelegramBot] Error sending a message:${err.toString()}`
+            )
+        }
+    }
+
+    /**
+     * Send a photo using the chatID
+     *
+     * @param {Integer} chatID
+     * @param {String} fileName
+     * @memberof TelegramBot
+     */
+    async sendPhoto(chatID, fileName) {
+        try {
+            return axios
+                .get(this.url + 'sendPhoto', {
+                    params: {
+                        chat_id: chatID,
+                        photo: `${telegram.webhookURL}/api/screenshot?fileName=${fileName}`,
+                    },
+                })
+                .then((res) => {
+                    return res
+                })
+                .catch((err) => {
+                    console.log(err)
+                    throw Error(
+                        `[TelegramBot] Error sending a photo:${err.toString()}`
+                    )
+                })
+        } catch (err) {
+            throw Error(`[TelegramBot] Error sending a photo:${err.toString()}`)
         }
     }
 }

@@ -1,16 +1,26 @@
 const config = require('../config')
 const bodyParser = require('body-parser')
 const express = require('express')
+const cors = require('cors')
 
-const { server } = require('../config')
-const app = express()
+const { server, client } = require('../config')
 const CommandHandler = require('../telegram/commandHandler')
 const bot = require('../telegram/telegram-bot')
+const app = express()
+
+// Routers
+const chartRouter = require('./routes/chart')
 
 app.use(bodyParser.json())
 app.use(
     bodyParser.urlencoded({
         extended: true,
+    })
+)
+
+app.use(
+    cors({
+        origin: client.url,
     })
 )
 
@@ -29,6 +39,10 @@ async function main(req, res) {
     }
 }
 
+// Api routes
+app.use('/api', chartRouter)
+
+// Main view
 app.get('/', async (req, res) => {
     try {
         res.send('Hello world!')
