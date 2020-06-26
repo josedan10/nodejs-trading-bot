@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/josedan10/nodejs-trading-bot/compare/v1.1.1...v1.2.0) (2020-06-26)
+
+
+### Features
+
+* :sparkles: connect client app to server ([f219242](https://github.com/josedan10/nodejs-trading-bot/commit/f219242601a8cffd76d484c99f2e730598ec2111))
+* :sparkles: the bot takescreenshots from client app ([cad788a](https://github.com/josedan10/nodejs-trading-bot/commit/cad788a9791e35096ed0af9c061edd69847fbfd7))
+
 ### [1.1.1](https://github.com/josedan10/nodejs-trading-bot/compare/v1.1.0...v1.1.1) (2020-06-23)
 
 <a name="1.1.0"></a>
