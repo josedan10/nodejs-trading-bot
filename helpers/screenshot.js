@@ -13,7 +13,11 @@ async function takeScreenshot() {
     try {
         const fileName = `screen_chartBTC-${moment.now()}.png`
         const screenshotsPath = 'static/screenshots/'
-        await captureWebsite.file(client.url, `${screenshotsPath + fileName}`)
+        await captureWebsite.file(client.url, `${screenshotsPath + fileName}`, {
+            launchOptions: {
+                args: ['--no-sandbox', '--disable-setuid-sandbox'],
+            },
+        })
         return screenshotsPath + fileName
     } catch (err) {
         console.log(err)
