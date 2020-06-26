@@ -3,6 +3,7 @@ const routinesServer = require('../server/routines')
 const telegramBot = require('./telegram-bot')
 const fs = require('fs')
 const path = require('path')
+const { takeScreenshot } = require('../helpers/screenshot')
 
 // Chat types
 const PRIVATE_CHAT = 'private'
@@ -143,6 +144,12 @@ class CommandHandler {
                     message.chat.id
                 )
                 return [message.chat.id, 'Setting routine update']
+
+            case 'screenshot':
+                const fileName = await takeScreenshot()
+                await telegramBot.sendPhoto(message.chat.id, fileName)
+
+                return [message.chat.id, 'Screenshot!']
 
             case 'help':
                 return [message.chat.id, readHelp(), 'MarkdownV2']
