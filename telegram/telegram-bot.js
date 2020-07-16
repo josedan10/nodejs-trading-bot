@@ -33,7 +33,7 @@ class TelegramBot {
                 },
             })
         } catch (err) {
-            throw Error('[Telegram Bot]: ' + error.toString())
+            throw Error('[TelegramBot]: ' + error.toString())
         }
     }
 

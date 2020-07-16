@@ -3,9 +3,12 @@ const WS = require('ws-reconnect')
 const moment = require('moment')
 const { bitfinex, telegram } = require('../config')
 const telegramBot = require('../telegram/telegram-bot')
+const axios = require('axios')
 
 /**
  * Exchange handler object
+ *
+ * @see https://docs.bitfinex.com/docs/rest-auth
  *
  * @class BitfinexConnection
  */
@@ -35,6 +38,7 @@ class BitfinexConnection {
         this.candleTimeframe = '1h' // By default 1 hour
         this.market = 'BTCUSD'
         this.wallets = null
+        this.restPublicURL = bitfinex.bitfinexRESTPublicURL
     }
 
     /**
@@ -179,6 +183,55 @@ class BitfinexConnection {
             isNotTheSnapShot &&
             (thereAreNotPreviousStatus || isTheLatestUpdate)
         )
+    }
+
+    // REST Methods
+    /**
+     *  Get candles using public endpoint of bitfinex REST API
+     *
+     * @param {String} args
+     * @param {String} tf
+     * @param {Integer} limit
+     * @return {Array}
+     * @memberof BitfinexConnection
+     */
+    async getCandles(args, tf, limit) {
+        const symbol = args[0].toUpperCase()
+
+        try {
+            const { data } = await axios.get(
+                `${this.restPublicURL}/candles/trade:${tf}:t${symbol}/hist`
+            )
+
+            return data
+        } catch (error) {
+            throw Error('[Trader]: ' + error.toString())
+        }
+    }
+
+    /**
+     *
+     *
+     * @param {String} symbol
+     * @param {String} tf
+     * @param {Integer} limit
+     * @param {String} sheetName
+     * @memberof BitfinexConnection
+     */
+    setTestData(symbol, tf, limit = 1000, sheetName) {
+        try {
+            const candles1Hr = axios.get(
+                `${this.restPublicURL}/candles/trade:${tf}:t${symbol}/hist`,
+                {
+                    params: {
+                        limit,
+                    },
+                }
+            )
+            console.log(candles1Hr)
+        } catch (error) {
+            throw Error('[Trader]: ' + error.toString())
+        }
     }
 }
 

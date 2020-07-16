@@ -29,6 +29,7 @@ async function main(req, res) {
     // Start the app
     try {
         await bot.setWebhook(config.telegram.webhookURL)
+        await bot.setCommands()
         console.log('Started the app')
     } catch (err) {
         console.error(err)

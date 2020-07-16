@@ -1,6 +1,7 @@
 const bfx = require('../bitfinex/bfx')
 const routinesServer = require('../server/routines')
 const telegramBot = require('./telegram-bot')
+const trader = require('../trader/index')
 const fs = require('fs')
 const path = require('path')
 const { takeScreenshot } = require('../helpers/screenshot')
@@ -135,6 +136,13 @@ class CommandHandler {
                 return [
                     message.chat.id,
                     'Starting to get trading info... Wait a moment...',
+                ]
+
+            case 'strategy':
+                const candles = await bfx.getCandles(args, '1h', 40 * 4)
+                return [
+                    message.chat.id,
+                    JSON.stringify(trader.runStrategy(candles)),
                 ]
 
             case 'routine':

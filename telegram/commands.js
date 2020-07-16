@@ -8,6 +8,10 @@ module.exports = [
         description: 'Subscribe to candle updates',
     },
     {
+        command: 'strategy',
+        description: 'Show strategy results',
+    },
+    {
         command: 'routine',
         description: `Send signals by intervals, using words "mins" or "hrs" to set it`,
     },
