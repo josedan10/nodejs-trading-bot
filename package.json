@@ -39,7 +39,7 @@
     "ws-reconnect": "^1.0.7"
   },
   "devDependencies": {
-    "@commitlint/cli": "^8.3.5",
+    "@commitlint/cli": "^9.1.2",
     "@commitlint/config-conventional": "^8.3.4",
     "eslint": "^7.4.0",
     "eslint-config-google": "^0.14.0",
@@ -50,6 +50,8 @@
     "eslint-plugin-promise": "^4.2.1",
     "husky": "^4.2.5",
     "jest": "^26.1.0",
+    "jest-chain": "^1.1.5",
+    "jest-extended": "^0.11.5",
     "lint-staged": "^10.2.11",
     "prettier": "^2.0.5",
     "standard-version": "^8.0.2"
@@ -66,5 +68,8 @@
       "./node_modules/.bin/eslint --fix --ignore-path .gitignore",
       "./node_modules/.bin/jest --findRelatedTests"
     ]
+  },
+  "jest": {
+    "setupFilesAfterEnv": ["./jestSetup.js"]
   }
 }

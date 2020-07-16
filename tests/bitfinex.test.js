@@ -86,3 +86,11 @@ describe('Test messages', () => {
         expect(bfx.isCandleUpdate(msg)).toBe(true)
     })
 })
+
+describe('Test REST API', () => {
+    test('Returns a candles array', () => {
+        bfx.getCandles('BTCUSD', '1m').then((data) => {
+            expect(data).toBeArray()
+        })
+    })
+})
