@@ -1,8 +1,8 @@
 const CronJob = require('cron').CronJob
-// const { telegram } = require('../config')
 const telegramBot = require('../telegram/telegram-bot')
 const bfx = require('../bitfinex/bfx')
 const moment = require('moment')
+const trader = require('../trader')
 
 /**
  * Routines controller
@@ -21,7 +21,7 @@ class ServerRoutine {
     /**
      * Set a routine for 5 minutes meanwhile
      *
-     * @param {*} statusName
+     * @param {String} statusName
      * @param {Array} timeFrame,
      * @param {Integer} chatID
      * @memberof TelegramBot
@@ -99,6 +99,36 @@ class ServerRoutine {
         if (_this.routines[statusName]) _this.routines[statusName].stop()
 
         setRoutine()
+    }
+
+    /**
+     * Set a routine for trading strategy
+     *
+     * @param {Array} args [strategyName, symbol]
+     * @param {Integer} chatID
+     * @memberof ServerRoutine
+     */
+    async setStrategy(args, chatID) {
+        trader.strategy = args[0]
+
+        const routineString = '* * * * *'
+
+        try {
+            // Create the cronjob
+            this.routines['strategy'] = new CronJob(routineString, async () => {
+                // Get info and format it
+                const candles = await bfx.getCandles(args, '1h', 40 * 4)
+
+                telegramBot.sendMessage(
+                    chatID,
+                    JSON.stringify(trader.runStrategy(candles))
+                )
+            })
+
+            this.routines.strategy.start()
+        } catch (err) {
+            throw Error(`[Strategy Routine]: ${err.toString()}`)
+        }
     }
 }
 

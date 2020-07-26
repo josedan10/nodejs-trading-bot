@@ -26,15 +26,15 @@ function adeline(data, symbol, status) {
         timestamp: null,
     }
 
-    if (sma40 < sma10 && status.position === 'long') {
+    if (sma40 < sma10 && status.position === 'Out') {
         // Buy signal
-        // Only buy when the bot is inside a ling trade.
-        response.position = 'short'
+        // Only buy when the bot is inside a long trade.
+        response.position = 'In'
         response.price = data[0].close
         response.timestamp = data[0].timestamp
     } else {
         // Sell signal
-        response.position = 'long'
+        response.position = 'Out'
         response.price = data[0].close
         response.timestamp = data[0].timestamp
     }

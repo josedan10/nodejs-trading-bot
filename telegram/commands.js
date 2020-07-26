@@ -9,7 +9,7 @@ module.exports = [
     },
     {
         command: 'strategy',
-        description: 'Show strategy results',
+        description: 'Set strategy algorithm',
     },
     {
         command: 'routine',

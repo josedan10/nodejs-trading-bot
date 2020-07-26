@@ -14,10 +14,11 @@ class Trader {
     constructor() {
         this._symbol = null
         this._status = {
-            position: null,
+            position: null, // values: ['In', 'Out']
             price: 0,
             timestamp: null,
         }
+
         this._strategy = 'adeline'
     }
 

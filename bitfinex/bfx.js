@@ -189,23 +189,28 @@ class BitfinexConnection {
     /**
      *  Get candles using public endpoint of bitfinex REST API
      *
-     * @param {String} args
+     * @param {String} args [strategy, symbol]
      * @param {String} tf
      * @param {Integer} limit
      * @return {Array}
      * @memberof BitfinexConnection
      */
     async getCandles(args, tf, limit) {
-        const symbol = args[0].toUpperCase()
+        const symbol = args[1].toUpperCase()
 
         try {
             const { data } = await axios.get(
-                `${this.restPublicURL}/candles/trade:${tf}:t${symbol}/hist`
+                `${this.restPublicURL}/candles/trade:${tf}:t${symbol}/hist`,
+                {
+                    params: {
+                        limit,
+                    },
+                }
             )
 
             return data
         } catch (error) {
-            throw Error('[Trader]: ' + error.toString())
+            throw Error('[Bitfinex Connection]: ' + error.toString())
         }
     }
 
