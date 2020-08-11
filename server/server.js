@@ -6,6 +6,9 @@ const cors = require('cors')
 const { server, client } = require('../config')
 const CommandHandler = require('../telegram/commandHandler')
 const bot = require('../telegram/telegram-bot')
+const Test = require('../trader/testScript')
+const googleSheetsController = require('../helpers/sheets')
+
 const app = express()
 
 // Routers
@@ -30,6 +33,8 @@ async function main(req, res) {
     try {
         await bot.setWebhook(config.telegram.webhookURL)
         await bot.setCommands()
+        googleSheetsController.authorize()
+
         console.log('Started the app')
     } catch (err) {
         console.error(err)
@@ -53,6 +58,7 @@ app.get('/', async (req, res) => {
 
 // Endpoints
 app.post('/', CommandHandler.handler.bind(CommandHandler))
+app.get('/test', Test)
 
 app.listen(server.port, function () {
     console.log(`The server is running on port ${server.port}`)

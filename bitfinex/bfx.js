@@ -106,7 +106,7 @@ class BitfinexConnection {
                 )
             })
             .on('message', (msg) => {
-                console.log('Nuevo mensaje: ', msg)
+                // console.log('Nuevo mensaje: ', msg)
                 msg = JSON.parse(msg)
 
                 if (!Array.isArray(msg)) {

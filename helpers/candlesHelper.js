@@ -18,27 +18,34 @@ const formatCandles = (data) =>
  *  Build 4Hrs candles from formated candles array
  *
  * @param {Array} data formated 1H candles
+ * @return {Array}
  */
 const create4HCandles = (data) => {
     const array4h = []
     let candle
 
-    for (let i = 0; i < data.length; i += 4) {
-        // Copy the candle
-        candle = { ...data[i] }
-        candle.close = data[i + 4].close
+    try {
+        for (let i = 0; i < data.length; i += 4) {
+            // Copy the candle
+            candle = { ...data[i] }
+            candle.close = data[i + 3].close
 
-        // Iterate candles group
-        data.slice([i + 1, i + 4]).forEach((c) => {
-            // Set highest price
-            if (c.high > candle.high) candle.high = c.high
-            // Set lowest price
-            if (c.low < candle.low) candle.low = c.low
-            // Sum volumes
-            candle.volume += c.volume
-        })
+            // Iterate candles group
+            data.slice([i + 1, i + 4]).forEach((c) => {
+                // Set highest price
+                if (c.high > candle.high) candle.high = c.high
+                // Set lowest price
+                if (c.low < candle.low) candle.low = c.low
+                // Sum volumes
+                candle.volume += c.volume
+            })
 
-        array4h.push(candle)
+            array4h.push(candle)
+        }
+
+        return array4h
+    } catch (err) {
+        console.log(err)
     }
 }
 

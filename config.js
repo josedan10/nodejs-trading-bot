@@ -30,6 +30,15 @@ const config = {
     client: {
         url: env.APP_ENV === 'debug' ? env.CLIENT_TEST_URL : env.CLIENT_URL,
     },
+    google_sheets: {
+        client_id: env.GOOGLE_SHEETS_CLIENT_ID,
+        project_id: env.GOOGLE_SHEETS_PROJECT_ID,
+        auth_uri: env.GOOGLE_SHEETS_AUTH_URI,
+        token_uri: env.GOOGLE_SHEETS_TOKEN_URI,
+        auth_certs_url: env.GOOGLE_SHEETS_AUTH_CERTS_URL,
+        client_secret: env.GOOGLE_SHEETS_CLIENT_SECRET,
+        redirect_uris: [env.GOOGLE_SHEETS_REDIRECT_URIS],
+    },
 }
 
 module.exports = config

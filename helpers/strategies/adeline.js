@@ -21,20 +21,20 @@ function adeline(data, symbol, status) {
     const sma10 = sma(data, 10)
 
     const response = {
-        position: null,
         price: 0,
         timestamp: null,
+        signal: null,
     }
 
     if (sma40 < sma10 && status.position === 'Out') {
         // Buy signal
         // Only buy when the bot is inside a long trade.
-        response.position = 'In'
+        response.signal = 'Bought'
         response.price = data[0].close
         response.timestamp = data[0].timestamp
     } else {
         // Sell signal
-        response.position = 'Out'
+        response.signal = 'Sell'
         response.price = data[0].close
         response.timestamp = data[0].timestamp
     }
