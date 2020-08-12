@@ -10,35 +10,36 @@ const trader = require('.')
  * @param {ExpressResponse} res
  */
 async function test(req, res) {
+    const time1Year = 24 * 365
+    let data1YearCandles
+    let result
+    let reorderedHistCandles4H
+
+    // Headers
+    // const headers = ['Timestamp', 'Open', 'Close', 'High', 'Low', 'Volume']
+    const sheetDataParams = {
+        sheetName: 'TestData',
+        range: 'A2',
+        majorDimension: 'ROWS',
+    }
+
     try {
-        const time1Year = 24 * 365
-        const data1YearCandles = await bfx.getCandles(
-            [null, 'BTCUSD'],
-            '1h',
-            time1Year
+        const candles4H = await googleSheetsHandler.getEntireSheetData(
+            'TestData',
+            'A2:F'
         )
 
-        // Set initial state
-        trader.status.amount = trader.status.initialAmount = parseFloat(
-            req.query.amount
-        )
-
-        // Headers
-        // const headers = ['Timestamp', 'Open', 'Close', 'High', 'Low', 'Volume']
-        const sheetParams = {
-            sheetName: 'TestData',
-            range: 'A2',
-            majorDimension: 'ROWS',
-        }
-
-        // await googleSheetsHandler.updateSheet(headers, sheetParams)
-
-        // Save test data on google sheets
-        const formatedCandles1H = formatCandles(data1YearCandles)
-        const candles4H = create4HCandles(formatedCandles1H)
-        const sheetData = candles4H
-            .reverse()
-            .map((candle) => [
+        if (candles4H.length === 0) {
+            // Save test data on google sheets
+            data1YearCandles = await bfx.getCandles(
+                [null, 'BTCUSD'],
+                '1h',
+                time1Year
+            )
+            const formatedCandles1H = formatCandles(data1YearCandles)
+            const candles4H = create4HCandles(formatedCandles1H)
+            reorderedHistCandles4H = candles4H.reverse()
+            const sheetData = reorderedHistCandles4H.map((candle) => [
                 candle.timestamp,
                 candle.open,
                 candle.close,
@@ -47,34 +48,45 @@ async function test(req, res) {
                 candle.volume,
             ])
 
-        const result = await googleSheetsHandler.updateSheet(
-            sheetData,
-            sheetParams
+            result = await googleSheetsHandler.updateSheet(
+                sheetData,
+                sheetDataParams
+            )
+        } else {
+            reorderedHistCandles4H = formatCandles(candles4H)
+        }
+
+        // await googleSheetsHandler.updateSheet(headers, sheetParams)
+    } catch (err) {
+        console.log(err)
+        throw Error('[ Error in Test ] :' + err.toString())
+    } finally {
+        // Set initial state
+        trader.status.amount = trader.status.initialAmount = parseFloat(
+            req.query.amount
         )
 
+        // Test strategy with Test Data
+        for (let i = 0; i < reorderedHistCandles4H.length - 40; i++) {
+            const resultStatus = trader.runStrategy(
+                reorderedHistCandles4H.slice(i, i + 40)
+            )
+
+            if (
+                resultStatus.signal === 'Sell' &&
+                trader.status.position === 'In'
+            )
+                await trader.executeSellOrder(resultStatus)
+            else if (
+                resultStatus.signal === 'Bought' &&
+                trader.status.position === 'Out'
+            )
+                await trader.executeBuyOrder(resultStatus)
+            else if (resultStatus.moveStopLoss)
+                trader.moveStopLoss(resultStatus)
+        }
+
         res.send(result)
-
-        // Execute strategy
-        // const testArray = []
-
-        // if (testArray.length < 40) {
-        //     testArray.push(row)
-        // } else {
-        //     const { position } = trader.status
-        //     const strategyResult = trader.runStrategyTest(testArray)
-
-        //     if (strategyResult.signal === 'Sell' && position === 'In')
-        //         await trader.executeSellOrder(strategyResult)
-
-        //     else if (strategyResult.signal === 'Bought' && position === 'Out')
-        //         await trader.executeBuyOrder(strategyResult)
-
-        //     testArray.shift()
-        //     testArray.push()
-        // }
-    } catch (err) {
-        res.send(err)
-        throw Error('[ Error in Test ] :' + err.toString())
     }
 }
 

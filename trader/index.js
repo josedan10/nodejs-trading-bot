@@ -1,8 +1,5 @@
 const moment = require('moment-timezone')
-// const CsvReadableStream = require('csv-reader')
-// const fs = require('fs')
-const CreateCsvWriter = require('csv-writer').createObjectCsvWriter
-// const csvParser = require('csv-parser')
+const googleSheetsHelper = require('../helpers/google/sheets')
 const strategies = require('../helpers/strategies')
 const candlesHelper = require('../helpers/candlesHelper')
 
@@ -27,9 +24,12 @@ class Trader {
             profitLoss: 0, // Total profit/loss on base currency
             percentage: 0, // Profit/loss percentage
             initialAmount: 0, // Initial amount on base currency
-            date: false, // Date order
+            date: null, // Date order
             signal: 'Sell', // Type of signal ['Sell', 'Bought']
             symbolAmount: 0, // Amount on pair currency
+            stopLossPercentage: 0.02, // Stop loss percentage intially relative to bought price
+            stopLossPrice: 0,
+            moveStopLossPercentage: 0.04,
         }
 
         this.fieldNames = [
@@ -85,22 +85,17 @@ class Trader {
     /**
      *  Execute the trader's strategy
      *
-     * @param {Array} data candles array without format
+     * @param {Array} data candles array formated candles
      * @memberof Trader
      *
      * @return {Object} status
      */
     runStrategy(data) {
         // All strategies work with formated candles
-        const formatedCandles = candlesHelper.formatCandles(data)
 
         switch (this._strategy) {
             case 'adeline':
-                return strategies.adeline(
-                    formatedCandles,
-                    this._symbol,
-                    this.status
-                )
+                return strategies.adeline(data, this._symbol, this.status)
 
             default:
                 console.log('Nothing to do')
@@ -114,24 +109,29 @@ class Trader {
      * @param {*} order
      * @memberof Trader
      */
-    writeOrder(order) {
-        try {
-            const csvWriter = new CreateCsvWriter({
-                path: './testData.csv',
-                header: [
-                    { id: 'date', title: 'Date' },
-                    { id: 'signal', title: 'Signal ' },
-                    { id: 'price', title: 'Price' },
-                    { id: 'amount', title: 'Amount' },
-                    { id: 'profit_loss', title: 'ProfitLoss' },
-                    { id: 'percentage', title: 'Percentage' },
-                ],
-            })
+    async writeOrder(order) {
+        return new Promise((resolve, reject) => {
+            try {
+                const sheetResultsParams = {
+                    sheetName: 'TestResults',
+                    range: 'A2',
+                    majorDimension: 'ROWS',
+                }
 
-            csvWriter.writeRecords(order)
-        } catch (err) {
-            console.log(err)
-        }
+                setTimeout(
+                    () =>
+                        resolve(
+                            googleSheetsHelper.appendToSheet(
+                                [order],
+                                sheetResultsParams
+                            )
+                        ),
+                    1500
+                )
+            } catch (err) {
+                console.log(err)
+            }
+        })
     }
 
     /**
@@ -180,36 +180,35 @@ class Trader {
         const _this = this
 
         // Read the last previous result
-        const lastRow = listData[listData.length - 1]
+        // lastRo = [date, signal, price, amount, profitLoss, percentage]
+        const lastRow = await googleSheetsHelper.getLastRow('TestResults')
 
         try {
-            const price = lastRow.price
+            const price = resultStatus.price
 
             _this.status.amount = _this.status.symbolAmount * price
             _this.status.symbolAmount = 0
             _this.status.position = 'Out'
+            _this.status.stopLossPrice = null
 
-            const profitLoss =
-                _this.status.amount - parseFloat(lastRow['Amount'])
+            const profitLoss = _this.status.amount - parseFloat(lastRow[3])
             const percentage =
-                ((price - parseFloat(lastRow['Price'])) * 100) /
-                parseFloat(lastRow['Price'])
+                ((price - parseFloat(lastRow[2])) * 100) /
+                parseFloat(lastRow[2])
 
             _this.status.profitLoss += profitLoss
             _this.status.percentage += percentage
 
-            const order = {
-                date: date
-                    .tz('America/Caracas')
-                    .format('dddd, MMMM Do YYYY, HH:mm'),
-                signal: resultStatus.signal,
-                profit_loss: profitLoss,
-                percentage,
-                amount: _this.status.amount,
+            const order = [
+                date.tz('America/Caracas').format('dddd, MMMM Do YYYY, HH:mm'),
+                resultStatus.signal,
                 price,
-            }
+                _this.status.amount,
+                profitLoss,
+                percentage,
+            ]
 
-            _this.writeOrder(order)
+            await _this.writeOrder(order)
         } catch (err) {
             console.log(err)
         }
@@ -218,7 +217,7 @@ class Trader {
     /**
      * Buy and register order
      *
-     * @param {*} resultStatus
+     * @param {Object} resultStatus
      * @memberof Trader
      */
     async executeBuyOrder(resultStatus) {
@@ -232,25 +231,34 @@ class Trader {
             const profitLoss = 0
             const percentage = 0
 
-            const order = {
-                date: date
-                    .tz('America/Caracas')
-                    .format('dddd, MMMM Do YYYY, HH:mm'),
-                signal: resultStatus.signal,
-                profit_loss: profitLoss,
-                percentage,
-                amount: this.status.amount,
+            const order = [
+                date.tz('America/Caracas').format('dddd, MMMM Do YYYY, HH:mm'),
+                resultStatus.signal,
                 price,
-            }
-
-            await this.writeOrder(order)
+                this.status.amount,
+                profitLoss,
+                percentage,
+            ]
 
             this.status.symbolAmount = this.status.amount / price
             this.status.amount = 0
             this.status.position = 'In'
+            this.status.stopLossPrice =
+                price * (1 - this.status.stopLossPercentage)
+
+            await this.writeOrder(order)
         } catch (err) {
             console.log(err)
         }
+    }
+
+    /**
+     * Move the stopLoss price
+     *
+     * @param {Object} status
+     */
+    moveStopLoss(status) {
+        this.stopLossPrice = status.price * (1 - this.status.stopLossPercentage)
     }
 }
 

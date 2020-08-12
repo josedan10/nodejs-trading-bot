@@ -6,12 +6,12 @@
  */
 const formatCandles = (data) =>
     data.map((candle) => ({
-        timestamp: candle[0] / 1000,
-        open: candle[1],
-        close: candle[2],
-        high: candle[3],
-        low: candle[4],
-        volume: candle[5],
+        timestamp: parseFloat(candle[0]),
+        open: parseFloat(candle[1]),
+        close: parseFloat(candle[2]),
+        high: parseFloat(candle[3]),
+        low: parseFloat(candle[4]),
+        volume: parseFloat(candle[5]),
     }))
 
 /**
