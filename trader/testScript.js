@@ -1,7 +1,5 @@
-const CreateCsvWriter = require('csv-writer').createObjectCsvWriter
-const csvParser = require('csv-parser')
-const fs = require('fs')
 const bfx = require('../bitfinex/bfx')
+const googleSheetsHandler = require('../helpers/google/sheets')
 const { formatCandles, create4HCandles } = require('../helpers/candlesHelper')
 const trader = require('.')
 
@@ -25,55 +23,57 @@ async function test(req, res) {
             req.query.amount
         )
 
-        // Save test data on google sheets
-        const csvWriter = new CreateCsvWriter({
-            path: './testData.csv',
-            header: [
-                { id: 'timestamp', title: 'Timestamp' },
-                { id: 'open', title: 'Open' },
-                { id: 'close', title: 'Close' },
-                { id: 'high', title: 'High' },
-                { id: 'low', title: 'Low' },
-                { id: 'volume', title: 'Volume' },
-            ],
-        })
+        // Headers
+        // const headers = ['Timestamp', 'Open', 'Close', 'High', 'Low', 'Volume']
+        const sheetParams = {
+            sheetName: 'TestData',
+            range: 'A2',
+            majorDimension: 'ROWS',
+        }
 
+        // await googleSheetsHandler.updateSheet(headers, sheetParams)
+
+        // Save test data on google sheets
         const formatedCandles1H = formatCandles(data1YearCandles)
         const candles4H = create4HCandles(formatedCandles1H)
+        const sheetData = candles4H
+            .reverse()
+            .map((candle) => [
+                candle.timestamp,
+                candle.open,
+                candle.close,
+                candle.high,
+                candle.low,
+                candle.volume,
+            ])
 
-        await csvWriter.writeRecords(candles4H.reverse())
+        const result = await googleSheetsHandler.updateSheet(
+            sheetData,
+            sheetParams
+        )
+
+        res.send(result)
 
         // Execute strategy
-        const testArray = []
+        // const testArray = []
 
-        fs.createReadStream('testData.csv')
-            .pipe(csvParser())
-            .on('data', async (row) => {
-                if (testArray.length < 40) {
-                    testArray.push(row)
-                } else {
-                    const { position } = trader.status
-                    const strategyResult = trader.runStrategyTest(testArray)
+        // if (testArray.length < 40) {
+        //     testArray.push(row)
+        // } else {
+        //     const { position } = trader.status
+        //     const strategyResult = trader.runStrategyTest(testArray)
 
-                    if (strategyResult.signal === 'Sell' && position === 'In')
-                        await trader.executeSellOrder(strategyResult)
-                    else if (
-                        strategyResult.signal === 'Bought' &&
-                        position === 'Out'
-                    )
-                        await trader.executeBuyOrder(strategyResult)
+        //     if (strategyResult.signal === 'Sell' && position === 'In')
+        //         await trader.executeSellOrder(strategyResult)
 
-                    testArray.shift()
-                    testArray.push()
-                }
-            })
-            .on('end', () => {
-                console.log('CSV file successfully processed')
-            })
+        //     else if (strategyResult.signal === 'Bought' && position === 'Out')
+        //         await trader.executeBuyOrder(strategyResult)
 
-        res.send('Working')
+        //     testArray.shift()
+        //     testArray.push()
+        // }
     } catch (err) {
-        res.send('Working')
+        res.send(err)
         throw Error('[ Error in Test ] :' + err.toString())
     }
 }

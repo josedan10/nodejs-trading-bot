@@ -38,6 +38,7 @@ const config = {
         auth_certs_url: env.GOOGLE_SHEETS_AUTH_CERTS_URL,
         client_secret: env.GOOGLE_SHEETS_CLIENT_SECRET,
         redirect_uris: [env.GOOGLE_SHEETS_REDIRECT_URIS],
+        spreadsheet_id: env.GOOGLE_SHEETS_SPREADSHEET_ID,
     },
 }
 

@@ -7,22 +7,21 @@ const {
 } = require('../../config')
 
 /**
- * Controller of google sheets fetching
+ * Handle the google OAuth
  *
- * @class GoogleSheetsController
+ * @class GoogleAuthenticator
  * @extends {google.auth.OAuth2}
  */
-class GoogleSheetsController extends google.auth.OAuth2 {
+class GoogleAuthenticator extends google.auth.OAuth2 {
     /**
-     *Creates an instance of GoogleSheetsController.
+     *Creates an instance of GoogleAuthenticator.
      * @param {string} client_id
      * @param {string} client_secret
      * @param {string} redirect_uris
-     * @memberof GoogleSheetsController
+     * @memberof GoogleAuthenticator
      */
     constructor(client_id, client_secret, redirect_uris) {
-        super(client_id, client_secret, redirect_uris)
-
+        super(client_id, client_secret, redirect_uris[0])
         // If modifying these scopes, delete token.json.
         this.SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
@@ -35,7 +34,7 @@ class GoogleSheetsController extends google.auth.OAuth2 {
     /**
      * If the token not exist this call getNewToken function to get a new token
      *
-     * @memberof GoogleSheetsController
+     * @memberof GoogleAuthenticator
      */
     authorize() {
         const _this = this
@@ -50,8 +49,6 @@ class GoogleSheetsController extends google.auth.OAuth2 {
     /**
      * Get and store new token after prompting for user authorization, and then
      * execute the given callback with the authorized OAuth2 client.
-     * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
-     * @param {getEventsCallback} callback The callback for the authorized client.
      */
     getNewToken() {
         const _this = this
@@ -85,8 +82,8 @@ class GoogleSheetsController extends google.auth.OAuth2 {
     }
 }
 
-module.exports = new GoogleSheetsController(
+module.exports = new GoogleAuthenticator(
     client_id,
     client_secret,
-    redirect_uris
+    redirect_uris[0]
 )

@@ -7,7 +7,7 @@ const { server, client } = require('../config')
 const CommandHandler = require('../telegram/commandHandler')
 const bot = require('../telegram/telegram-bot')
 const Test = require('../trader/testScript')
-const googleSheetsController = require('../helpers/sheets')
+const googleAuthenticator = require('../helpers/google/auth')
 
 const app = express()
 
@@ -33,7 +33,7 @@ async function main(req, res) {
     try {
         await bot.setWebhook(config.telegram.webhookURL)
         await bot.setCommands()
-        googleSheetsController.authorize()
+        googleAuthenticator.authorize()
 
         console.log('Started the app')
     } catch (err) {

@@ -6,7 +6,7 @@
  */
 const formatCandles = (data) =>
     data.map((candle) => ({
-        timestamp: candle[0] / 100,
+        timestamp: candle[0] / 1000,
         open: candle[1],
         close: candle[2],
         high: candle[3],
@@ -31,7 +31,7 @@ const create4HCandles = (data) => {
             candle.close = data[i + 3].close
 
             // Iterate candles group
-            data.slice([i + 1, i + 4]).forEach((c) => {
+            data.slice(i + 1, i + 4).forEach((c) => {
                 // Set highest price
                 if (c.high > candle.high) candle.high = c.high
                 // Set lowest price
