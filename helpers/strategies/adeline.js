@@ -47,23 +47,23 @@ function adeline(data, symbol, status) {
 
     // Stop Loss handler
 
-    // if (status.position === 'In') {
-    //     // Stop loss price reached
-    //     if (data[0].close <= status.stopLossPrice) {
-    //         // Sell signal
-    //         response.signal = 'Sell'
-    //         response.price = status.stopLossPrice
-    //         response.timestamp = data[0].timestamp
-    //     } else if (data[0].close > status.stopLossPrice) {
-    //         const diff = data[0].close - status.stop
+    if (status.position === 'In') {
+        // Stop loss price reached
+        if (data[0].close <= status.stopLossPrice) {
+            // Sell signal
+            response.signal = 'Sell'
+            response.price = status.stopLossPrice
+            response.timestamp = data[0].timestampfi
+        } else if (data[0].close > status.stopLossPrice) {
+            const diff = data[0].close - status.stop
 
-    //         // Move stop loss price
-    //         if (diff > status.stopLossPrice * status.moveStopLossPercentage) {
-    //             response.moveStopLoss = true
-    //             response.price = data[0].close
-    //         }
-    //     }
-    // }
+            // Move stop loss price
+            if (diff > status.stopLossPrice * status.moveStopLossPercentage) {
+                response.moveStopLoss = true
+                response.price = data[0].close
+            }
+        }
+    }
 
     // Save data on google sheets here
     return response
