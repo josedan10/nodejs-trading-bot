@@ -53,7 +53,7 @@ function adeline(data, symbol, status) {
             // Sell signal
             response.signal = 'Sell'
             response.price = status.stopLossPrice
-            response.timestamp = data[0].timestampfi
+            response.timestamp = data[0].timestamp
         } else if (data[0].close > status.stopLossPrice) {
             const diff = data[0].close - status.stop
 
