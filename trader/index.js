@@ -2,6 +2,7 @@ const moment = require('moment-timezone')
 const googleSheetsHelper = require('../helpers/google/sheets')
 const strategies = require('../helpers/strategies')
 const candlesHelper = require('../helpers/candlesHelper')
+const { setOrder } = require('../helpers/actions/orders')
 
 /**
  * Trader object to execute strategies
@@ -17,6 +18,7 @@ class Trader {
         this._symbol = null
 
         this.status = {
+            balance: 0,
             position: 'Out', // values: ['In', 'Out']
             price: 0, // Symbol price
             timestamp: null, // Order timestamp
@@ -30,6 +32,7 @@ class Trader {
             stopLossPercentage: 0.02, // Stop loss percentage intially relative to bought price
             stopLossPrice: 0,
             moveStopLossPercentage: 0.04,
+            symbol: 'BTCUSD',
         }
 
         this.fieldNames = [
@@ -175,7 +178,7 @@ class Trader {
      * @param {*} resultStatus
      * @memberof Trader
      */
-    async executeSellOrder(resultStatus) {
+    async executeTestSellOrder(resultStatus) {
         const date = moment(resultStatus.timestamp)
         const _this = this
 
@@ -220,7 +223,7 @@ class Trader {
      * @param {Object} resultStatus
      * @memberof Trader
      */
-    async executeBuyOrder(resultStatus) {
+    async executeTestBuyOrder(resultStatus) {
         try {
             const date = moment(resultStatus.timestamp)
 
@@ -259,6 +262,71 @@ class Trader {
      */
     moveStopLoss(status) {
         this.stopLossPrice = status.price * (1 - this.status.stopLossPercentage)
+    }
+
+    /**
+     * Set order and update trader status
+     *
+     * @param {Number} amount
+     * @param {Number} price
+     * @param {String} symbol
+     * @memberof Trader
+     */
+    executeBuyOrder(amount, price = null, symbol = this.status.symbol) {
+        try {
+            const order = {
+                cid: Date.now(),
+                type: 'EXCHANGE LIMIT',
+                symbol: `t${symbol}`,
+                amount: amount,
+                price: price,
+            }
+
+            setOrder(order)
+            // this.updateStatus(bfx.wallets.status)
+        } catch (err) {
+            throw Error(`[Trader] Error executing buy order: ${err.toString()}`)
+        }
+    }
+
+    /**
+     *
+     *
+     * @memberof Trader
+     */
+    async trade() {
+        // I need 40 candles of 4 hour, so I must get 360 candles of 1 hour
+        const candles1HrsLimit = 360
+        let candles1HrsArray
+
+        try {
+            candles1HrsArray = await bfx.getCandles(
+                [null, 'BTCUSD'],
+                '1h',
+                candles1HrsLimit
+            )
+        } catch (err) {
+            throw Error(
+                '[Trader] error getting data from bitfinex: ' + err.toString()
+            )
+        }
+
+        const formatedCandles1H = formatCandles(candles1HrsArray)
+        const candles4H = create4HCandles(formatedCandles1H)
+
+        // Check strategy values
+        for (let i = 0; i < candles4H.length - 40; i++) {
+            const resultStatus = this.runStrategy(candles4H)
+
+            if (resultStatus.signal === 'Sell' && this.status.position === 'In')
+                this.executeSellOrder(resultStatus)
+            else if (
+                resultStatus.signal === 'Bought' &&
+                this.status.position === 'Out'
+            )
+                this.executeBuyOrder(resultStatus)
+            else if (resultStatus.moveStopLoss) this.moveStopLoss(resultStatus)
+        }
     }
 }
 

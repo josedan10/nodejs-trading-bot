@@ -1,9 +1,11 @@
 // const axios = require('axios')
 const WS = require('ws-reconnect')
 const moment = require('moment')
+const axios = require('axios')
+const crypto = require('crypto-js')
+
 const { bitfinex, telegram } = require('../config')
 const telegramBot = require('../telegram/telegram-bot')
-const axios = require('axios')
 
 /**
  * Exchange handler object
@@ -35,10 +37,16 @@ class BitfinexConnection {
              */
             candle: null,
         }
+        this.authChannelId = 0 // Auth id channel in bfx is number 0
+        this.wallets = {
+            walletUpdateType: 'wu',
+            status: [],
+        }
+        this.balance = 0
         this.candleTimeframe = '1h' // By default 1 hour
         this.market = 'BTCUSD'
-        this.wallets = null
         this.restPublicURL = bitfinex.bitfinexRESTPublicURL
+        this.restAuthURL = bitfinex.bitfinexRESTAuthURL
     }
 
     /**
@@ -88,6 +96,11 @@ class BitfinexConnection {
 
         _this.ws
             .on('connect', () => {
+                const authPayload = _this.getAuthWSPayload()
+                _this.ws.send(JSON.stringify(authPayload))
+
+                _this.subscribeToCandles()
+
                 telegramBot.sendMessage(
                     telegram.telegramChatID,
                     'Connected to websocket server'
@@ -106,7 +119,7 @@ class BitfinexConnection {
                 )
             })
             .on('message', (msg) => {
-                // console.log('Nuevo mensaje: ', msg)
+                console.log('Nuevo mensaje: ', msg)
                 msg = JSON.parse(msg)
 
                 if (!Array.isArray(msg)) {
@@ -117,8 +130,67 @@ class BitfinexConnection {
                     if (this.isCandleUpdate(msg)) {
                         this.candleStatus.candle = msg[1]
                     }
+
+                    // Wallets update
+                    if (this.isWalletUpdate(msg)) {
+                        this.wallets.status = msg[2]
+                    }
+
+                    // Balance update
+                    if (this.isBalanceUpdate(msg)) {
+                        this.balance = msg[2][0]
+                    }
                 }
             })
+    }
+
+    /**
+     *  Set the Auth payload for ws connection
+     *
+     * @return {AuthWSPayload}
+     * @memberof BitfinexConnection
+     */
+    getAuthWSPayload() {
+        const authNonce = Date.now() * 1000 // Generate an ever increasing, single use value. (a timestamp satisfies this criteria)
+        const authPayload = 'AUTH' + authNonce // Compile the authentication payload, this is simply the string 'AUTH' prepended to the nonce value
+        const authSig = crypto
+            // eslint-disable-next-line new-cap
+            .HmacSHA384(authPayload, this.APISecret)
+            .toString(crypto.enc.Hex) // The authentication payload is hashed using the private key, the resulting hash is output as a hexadecimal string
+
+        const { APIKey: apiKey } = this
+
+        return {
+            apiKey, // API key
+            authSig, // Authentication Sig
+            authNonce,
+            authPayload,
+            event: 'auth', // The connection event, will always equal 'auth'
+        }
+    }
+
+    /**
+     * Set the headers for auth rest endpoints
+     * @param {String} apiPath
+     * @param {Object} body payload
+     *
+     * @return {Object} options
+     * @memberof BitfinexConnection
+     */
+    getAuthRestHeaders(apiPath, body) {
+        const nonce = Date.now() * 1000 // Standard nonce generator. Timestamp * 1000
+
+        const signature = `/api/v2${apiPath}${nonce}${JSON.stringify(body)}`
+        // Consists of the complete url, nonce, and request body
+
+        // eslint-disable-next-line new-cap
+        const sig = crypto.HmacSHA384(signature, this.APISecret).toString()
+        // The authentication signature is hashed using the private key
+
+        return {
+            nonce,
+            signature: sig,
+        }
     }
 
     /**
@@ -132,7 +204,6 @@ class BitfinexConnection {
             case 'subscribed':
                 if (msg.channel === 'candles')
                     this.candleStatus.channelId = msg.chanId
-                break
 
             default:
                 break
@@ -183,6 +254,32 @@ class BitfinexConnection {
             isNotTheSnapShot &&
             (thereAreNotPreviousStatus || isTheLatestUpdate)
         )
+    }
+
+    /**
+     * Check if the msg is an wallet update
+     *
+     * @param {Object} msg
+     * @return {Boolean}
+     * @memberof BitfinexConnection
+     */
+    isWalletUpdate(msg) {
+        const isAuthChannel = msg[0] === this.authChannelId
+        const isWalletUpdateType = msg[1] === this.wallets.walletUpdateType
+        return isAuthChannel && isWalletUpdateType
+    }
+
+    /**
+     * Check if an balance update event
+     *
+     * @param {Object} msg
+     * @return {Boolean}
+     * @memberof BitfinexConnection
+     */
+    isBalanceUpdate(msg) {
+        const isAuthChannel = msg[0] === this.authChannelId
+        const isBalanceUpdateType = msg[1] === 'bu'
+        return isAuthChannel && isBalanceUpdateType
     }
 
     // REST Methods
@@ -236,6 +333,39 @@ class BitfinexConnection {
             console.log(candles1Hr)
         } catch (error) {
             throw Error('[Trader]: ' + error.toString())
+        }
+    }
+
+    /**
+     * Get Wallets status
+     *
+     * @memberof BitfinexConnection
+     */
+    async getWalletsUpdate() {
+        const path = '/auth/r/wallets'
+        const { nonce, signature } = this.getAuthRestHeaders(path)
+
+        try {
+            const res = await axios.post(
+                `${this.restAuthURL + path}`,
+                {},
+                {
+                    headers: {
+                        'bfx-nonce': nonce,
+                        'bfx-apikey': this.APIKey,
+                        'bfx-signature': signature,
+                    },
+                }
+            )
+
+            console.log(res)
+
+            return res
+        } catch (err) {
+            console.log(err)
+            throw Error(
+                `[Bitfinex] Error getting wallets update: ${err.toString()}`
+            )
         }
     }
 }

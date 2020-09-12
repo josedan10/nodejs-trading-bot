@@ -76,12 +76,12 @@ async function test(req, res) {
                 resultStatus.signal === 'Sell' &&
                 trader.status.position === 'In'
             )
-                await trader.executeSellOrder(resultStatus)
+                await trader.executeTestSellOrder(resultStatus)
             else if (
                 resultStatus.signal === 'Bought' &&
                 trader.status.position === 'Out'
             )
-                await trader.executeBuyOrder(resultStatus)
+                await trader.executeTestBuyOrder(resultStatus)
             else if (resultStatus.moveStopLoss)
                 trader.moveStopLoss(resultStatus)
         }

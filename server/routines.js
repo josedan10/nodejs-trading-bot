@@ -102,33 +102,20 @@ class ServerRoutine {
     }
 
     /**
-     * Set a routine for trading strategy
+     * Start the trade each 4 hours
      *
-     * @param {Array} args [strategyName, symbol]
-     * @param {Integer} chatID
+     * @param {*} args
+     * @param {*} chatID
      * @memberof ServerRoutine
      */
-    async setStrategy(args, chatID) {
-        trader.strategy = args[0]
+    async startTrading(args, chatID) {
+        const _this = this
 
-        const routineString = '* * * * *'
+        _this.routines['trade'] = new CronJob('0 */4 * * *', () => {
+            trader.trade()
+        })
 
-        try {
-            // Create the cronjob
-            this.routines['strategy'] = new CronJob(routineString, async () => {
-                // Get info and format it
-                const candles = await bfx.getCandles(args, '1h', 40 * 4)
-
-                telegramBot.sendMessage(
-                    chatID,
-                    JSON.stringify(trader.runStrategy(candles))
-                )
-            })
-
-            this.routines.strategy.start()
-        } catch (err) {
-            throw Error(`[Strategy Routine]: ${err.toString()}`)
-        }
+        _this.routines['trade'].start()
     }
 }
 

@@ -87,6 +87,14 @@ describe('Test messages', () => {
     })
 })
 
+describe('Return wallets from auth endpoint', () => {
+    test('Get Wallets', () => {
+        bfx.getWalletsUpdate().then((res) => {
+            expect(res.status).toBe(200)
+        })
+    })
+})
+
 describe('Test REST API', () => {
     test('Returns a candles array', () => {
         bfx.getCandles('BTCUSD', '1m').then((data) => {

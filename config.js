@@ -18,10 +18,15 @@ const config = {
     bitfinex: {
         bitfinexAPIKey: env.BITFINEX_API_KEY,
         bitfinexSecret: env.BITFINEX_API_SECRET,
+        bitfinexRESTAPIKey: env.BITFINEX_REST_API_KEY,
+        bitfinexRESTSecret: env.BITFINEX_REST_API_SECRET,
         bitfinexPublicURL:
             env.BITFINEX_PUBLIC_URL || 'wss://api-pub.bitfinex.com/ws/2',
+        bitfinexAuthURL: env.BITFINEX_AUTH_URL || 'wss://api.bitfinex.com/ws/2',
         bitfinexRESTPublicURL:
             env.BITFINEX_PUBLIC_REST_URL || 'https://api-pub.bitfinex.com/v2',
+        bitfinexRESTAuthURL:
+            env.BITFINEX_REST_AUTH_URL || `https://api.bitfinex.com/v2`,
     },
     server: {
         port: env.SERVER_PORT || env.PORT || 5000,

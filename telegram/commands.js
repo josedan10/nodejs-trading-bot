@@ -8,8 +8,12 @@ module.exports = [
         description: 'Subscribe to candle updates',
     },
     {
-        command: 'strategy',
-        description: 'Set strategy algorithm',
+        command: 'trade',
+        description: 'Set trading strategy algorithm',
+    },
+    {
+        command: 'status',
+        description: 'Get account status',
     },
     {
         command: 'routine',
