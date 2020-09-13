@@ -21,7 +21,7 @@ class GoogleAuthenticator extends google.auth.OAuth2 {
      * @memberof GoogleAuthenticator
      */
     constructor(client_id, client_secret, redirect_uris) {
-        super(client_id, client_secret, redirect_uris[0])
+        super(client_id, client_secret, redirect_uris)
         // If modifying these scopes, delete token.json.
         this.SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 

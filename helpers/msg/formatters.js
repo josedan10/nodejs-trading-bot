@@ -24,19 +24,19 @@
  */
 function formatWalletUpdate(wu, balance) {
     const msg = `
-        ✨ NEW ACCOUNT STATUS!
+✨ NEW ACCOUNT STATUS!
         
-        💰 Balance: ${balance} USD.
+💰 Balance: ${balance} USD.
 
-        Wallet Update
+Wallet Update
 
-        Type: ${wu[0]}
-        Currency: ${wu[1]}
-        Available: ${wu[4]}
+Type: ${wu[0]}
+Currency: ${wu[1]}
+Available: ${wu[4]}
 
-        Info: 
-        ${JSON.stringify(wu.slice(5, wu.length))}
-    `
+Info: 
+${JSON.stringify(wu.slice(5, wu.length))}
+`
 
     return msg
 }
