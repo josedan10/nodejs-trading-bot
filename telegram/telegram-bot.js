@@ -21,6 +21,23 @@ class TelegramBot {
     }
 
     /**
+     *  Set the bot commands
+     *
+     * @memberof TelegramBot
+     */
+    async setCommands() {
+        try {
+            axios.get(`${this.url}setMyCommands`, {
+                params: {
+                    commands: JSON.stringify(require('./commands')),
+                },
+            })
+        } catch (err) {
+            throw Error('[TelegramBot]: ' + error.toString())
+        }
+    }
+
+    /**
      *  Executes the getMe function of telegram bots
      *
      * @return {Object} getMe status

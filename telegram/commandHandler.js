@@ -4,6 +4,8 @@ const telegramBot = require('./telegram-bot')
 const fs = require('fs')
 const path = require('path')
 const { takeScreenshot } = require('../helpers/screenshot')
+const { formatWalletUpdate } = require('../helpers/msg/formatters')
+const trader = require('../trader')
 
 // Chat types
 const PRIVATE_CHAT = 'private'
@@ -132,10 +134,8 @@ class CommandHandler {
 
             case 'trade':
                 bfx.subscribeToCandles()
-                return [
-                    message.chat.id,
-                    'Starting to get trading info... Wait a moment...',
-                ]
+                await routinesServer.startTrading(args, message.chat.id)
+                return [message.chat.id, 'Setted trading routine']
 
             case 'routine':
                 routinesServer.setRoutine(
@@ -144,6 +144,17 @@ class CommandHandler {
                     message.chat.id
                 )
                 return [message.chat.id, 'Setting routine update']
+
+            case 'status':
+                return [
+                    message.chat.id,
+                    formatWalletUpdate(bfx.wallets.status, bfx.balance),
+                ]
+
+            case 'order':
+                // args: amount, price, symbol
+                trader.executeBuyOrder(args[0], args[1], args[2])
+                return [message.chat.id, 'Order setted successfully']
 
             case 'screenshot':
                 const fileName = await takeScreenshot()

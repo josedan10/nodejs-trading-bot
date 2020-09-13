@@ -18,9 +18,15 @@ const config = {
     bitfinex: {
         bitfinexAPIKey: env.BITFINEX_API_KEY,
         bitfinexSecret: env.BITFINEX_API_SECRET,
+        bitfinexRESTAPIKey: env.BITFINEX_REST_API_KEY,
+        bitfinexRESTSecret: env.BITFINEX_REST_API_SECRET,
         bitfinexPublicURL:
             env.BITFINEX_PUBLIC_URL || 'wss://api-pub.bitfinex.com/ws/2',
-        bitfinexRESTPublicURL: env.BITFINEX_PUBLIC_REST_URL,
+        bitfinexAuthURL: env.BITFINEX_AUTH_URL || 'wss://api.bitfinex.com/ws/2',
+        bitfinexRESTPublicURL:
+            env.BITFINEX_PUBLIC_REST_URL || 'https://api-pub.bitfinex.com/v2',
+        bitfinexRESTAuthURL:
+            env.BITFINEX_REST_AUTH_URL || `https://api.bitfinex.com/v2`,
     },
     server: {
         port: env.SERVER_PORT || env.PORT || 5000,
@@ -28,6 +34,16 @@ const config = {
     },
     client: {
         url: env.APP_ENV === 'debug' ? env.CLIENT_TEST_URL : env.CLIENT_URL,
+    },
+    google_sheets: {
+        client_id: env.GOOGLE_SHEETS_CLIENT_ID,
+        project_id: env.GOOGLE_SHEETS_PROJECT_ID,
+        auth_uri: env.GOOGLE_SHEETS_AUTH_URI,
+        token_uri: env.GOOGLE_SHEETS_TOKEN_URI,
+        auth_certs_url: env.GOOGLE_SHEETS_AUTH_CERTS_URL,
+        client_secret: env.GOOGLE_SHEETS_CLIENT_SECRET,
+        redirect_uris: [env.GOOGLE_SHEETS_REDIRECT_URIS],
+        spreadsheet_id: env.GOOGLE_SHEETS_SPREADSHEET_ID,
     },
 }
 

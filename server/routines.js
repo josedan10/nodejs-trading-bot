@@ -1,8 +1,8 @@
 const CronJob = require('cron').CronJob
-// const { telegram } = require('../config')
 const telegramBot = require('../telegram/telegram-bot')
 const bfx = require('../bitfinex/bfx')
 const moment = require('moment')
+const trader = require('../trader')
 
 /**
  * Routines controller
@@ -21,7 +21,7 @@ class ServerRoutine {
     /**
      * Set a routine for 5 minutes meanwhile
      *
-     * @param {*} statusName
+     * @param {String} statusName
      * @param {Array} timeFrame,
      * @param {Integer} chatID
      * @memberof TelegramBot
@@ -99,6 +99,23 @@ class ServerRoutine {
         if (_this.routines[statusName]) _this.routines[statusName].stop()
 
         setRoutine()
+    }
+
+    /**
+     * Start the trade each 4 hours
+     *
+     * @param {*} args
+     * @param {*} chatID
+     * @memberof ServerRoutine
+     */
+    async startTrading(args, chatID) {
+        const _this = this
+
+        _this.routines['trade'] = new CronJob('0 */4 * * *', () => {
+            trader.trade()
+        })
+
+        _this.routines['trade'].start()
     }
 }
 

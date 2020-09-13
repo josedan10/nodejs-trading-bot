@@ -12,7 +12,7 @@
     "pretest": "./node_modules/.bin/eslint --ignore-path .gitignore . --fix",
     "release": "./node_modules/.bin/standard-version",
     "changelog": "./node_modules/.bin/conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
-    "test": "./node_modules/.bin/jest --watchAll --detectOpenHandles"
+    "test": "./node_modules/.bin/jest --watchAll --detectOpenHandles --coverage"
   },
   "keywords": [
     "nodejs",
@@ -29,18 +29,24 @@
     "conventional-changelog-cli": "^2.1.0",
     "cors": "^2.8.5",
     "cron": "^1.8.2",
+    "crypto-js": "^4.0.0",
+    "csv-parser": "^2.3.3",
+    "csv-reader": "^1.0.6",
+    "csv-writer": "^1.6.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "form-data": "^3.0.0",
+    "googleapis": "^39.2.0",
     "moment": "^2.27.0",
+    "moment-timezone": "^0.5.31",
     "npm": "^6.14.7",
     "socket.io": "^2.3.0",
     "ws": "^7.3.1",
     "ws-reconnect": "^1.0.7"
   },
   "devDependencies": {
-    "@commitlint/cli": "^8.3.5",
-    "@commitlint/config-conventional": "^8.3.4",
+    "@commitlint/cli": "^9.1.2",
+    "@commitlint/config-conventional": "^11.0.0",
     "eslint": "^7.7.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^6.11.0",
@@ -49,10 +55,12 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-promise": "^4.2.1",
     "husky": "^4.2.5",
-    "jest": "^26.4.0",
+    "jest": "^26.1.0",
+    "jest-chain": "^1.1.5",
+    "jest-extended": "^0.11.5",
     "lint-staged": "^10.2.11",
     "prettier": "^2.0.5",
-    "standard-version": "^8.0.2"
+    "standard-version": "^9.0.0"
   },
   "husky": {
     "hooks": {
@@ -65,6 +73,11 @@
       "./node_modules/.bin/prettier --check --write --loglevel warn",
       "./node_modules/.bin/eslint --fix --ignore-path .gitignore",
       "./node_modules/.bin/jest --findRelatedTests"
+    ]
+  },
+  "jest": {
+    "setupFilesAfterEnv": [
+      "./jestSetup.js"
     ]
   }
 }

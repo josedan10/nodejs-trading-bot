@@ -30,6 +30,7 @@ describe('Tests of telegram Bot', () => {
     })
 
     test('Should send an image to the chat', async () => {
+        // To run this test the server must be running
         return telegramBot
             .sendPhoto(telegramChatID, 'static/test.png')
             .then(({ data }) => {

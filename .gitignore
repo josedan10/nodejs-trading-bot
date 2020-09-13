@@ -4,3 +4,6 @@
 /static/screenshots/screen_*
 *~
 ./..*
+
+/coverage/  
+credentials.json
