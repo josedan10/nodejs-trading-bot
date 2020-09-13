@@ -3,6 +3,7 @@ const googleSheetsHelper = require('../helpers/google/sheets')
 const strategies = require('../helpers/strategies')
 const candlesHelper = require('../helpers/candlesHelper')
 const { setOrder } = require('../helpers/actions/orders')
+// const telegramBot = require('../telegram/telegram-bot')
 
 /**
  * Trader object to execute strategies

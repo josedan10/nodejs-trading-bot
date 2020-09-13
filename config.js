@@ -38,11 +38,20 @@ const config = {
     google_sheets: {
         client_id: env.GOOGLE_SHEETS_CLIENT_ID,
         project_id: env.GOOGLE_SHEETS_PROJECT_ID,
-        auth_uri: env.GOOGLE_SHEETS_AUTH_URI,
-        token_uri: env.GOOGLE_SHEETS_TOKEN_URI,
-        auth_certs_url: env.GOOGLE_SHEETS_AUTH_CERTS_URL,
+        auth_uri:
+            env.GOOGLE_SHEETS_AUTH_URI ||
+            'https://accounts.google.com/o/oauth2/auth',
+        token_uri:
+            env.GOOGLE_SHEETS_TOKEN_URI ||
+            'https://oauth2.googleapis.com/token',
+        auth_certs_url:
+            env.GOOGLE_SHEETS_AUTH_CERTS_URL ||
+            'https://www.googleapis.com/oauth2/v1/certs',
         client_secret: env.GOOGLE_SHEETS_CLIENT_SECRET,
-        redirect_uris: [env.GOOGLE_SHEETS_REDIRECT_URIS],
+        redirect_uris: [
+            env.GOOGLE_SHEETS_REDIRECT_URIS ||
+                'https://mysterious-brook-83261.herokuapp.com/OAuth/google-sheets',
+        ],
         spreadsheet_id: env.GOOGLE_SHEETS_SPREADSHEET_ID,
     },
 }

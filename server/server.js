@@ -7,6 +7,7 @@ const { server, client } = require('../config')
 const CommandHandler = require('../telegram/commandHandler')
 const bot = require('../telegram/telegram-bot')
 const Test = require('../trader/testScript')
+const auth = require('./routes/auth')
 const googleAuthenticator = require('../helpers/google/auth')
 
 const app = express()
@@ -43,6 +44,7 @@ async function main(req, res) {
 
 // Api routes
 app.use('/api', chartRouter)
+app.use('/OAuth', auth)
 
 // Main view
 app.get('/', async (req, res) => {
